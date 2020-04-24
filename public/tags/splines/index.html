@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta name="HandheldFriendly" content="True" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="generator" content="Hugo 0.69.0" />
+
+
+<link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/gh/amzrk2/poal-jsdelivr/amzrk2/favicons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/gh/amzrk2/poal-jsdelivr/amzrk2/favicons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/gh/amzrk2/poal-jsdelivr/amzrk2/favicons/favicon-16x16.png">
+<link rel="manifest" href="https://cdn.jsdelivr.net/gh/amzrk2/poal-jsdelivr/amzrk2/favicons/site.webmanifest">
+<link rel="mask-icon" href="https://cdn.jsdelivr.net/gh/amzrk2/poal-jsdelivr/amzrk2/favicons/safari-pinned-tab.svg" color="#8b81c3">
+<link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/amzrk2/poal-jsdelivr/amzrk2/favicons/favicon.ico">
+<meta name="msapplication-TileColor" content="#8b81c3">
+<meta name="msapplication-config" content="https://cdn.jsdelivr.net/gh/amzrk2/poal-jsdelivr/amzrk2/favicons/browserconfig.xml">
+<meta name="theme-color" content="#ffffff">
+
+
+<title>splines - Analisis de datos funcionales</title>
+
+<meta name="author" content="Juan Antonio Cuesta-Albetos, Asael Alonzo Matamoros" />
+<meta name="description" content="A minimal hugo theme powered by Primer CSS." />
+
+
+<meta property="og:title" content="splines" />
+<meta property="og:description" content="A minimal hugo theme powered by Primer CSS." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="/tags/splines/" />
+<meta property="og:image" content="/img/og.png"/>
+<meta property="og:updated_time" content="2020-04-23T00:00:00+00:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="/img/og.png"/>
+
+<meta name="twitter:title" content="splines"/>
+<meta name="twitter:description" content="A minimal hugo theme powered by Primer CSS."/>
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.min.css" />
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.min.js" integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.0/lazysizes.min.js" integrity="sha256-h2tMEmhemR2IN4wbbdNjj9LaDIjzwk2hralQwfJmBOE=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css" integrity="sha256-h20CPZ0QyXlBuAw7A+KluUYx/3pK+c7lYEpqLTlxjYQ=" crossorigin="anonymous" />
+
+
+
+
+
+
+
+
+
+<body class="d-flex flex-column h-100">
+    <header>
+    
+    <div class="container-lg clearfix">
+        <div class="col-12 p-3">
+            <a id="main-title" href="/">Analisis de datos funcionales</a>
+            <span id="sub-title">Codigos y cuadernos para la clase</span>
+        </div>
+    </div>
+</header>
+
+    <main>
+        <div class="container-lg clearfix">
+            
+            <div class="col-md-9 col-12 float-left" id="content">
+                
+<div id="page-tag">
+    <span>Posts with the tag splines: </span>
+</div>
+
+
+
+<div id="post">
+    <h2 id="post-title">
+        <a href="/2020-04-23-clase-02/">Clase 2: Analizando los datos de Crecimiento</a>
+    </h2>
+    <div id="post-meta">
+        <span>
+    <time datetime="2020-04-23 00:00:00 &#43;0000 UTC">2020-04-23</time> |
+</span>
+<span>
+    <span>605 words</span> |
+</span>
+<span>
+    
+    
+    <a href="//tags/splines/">Splines</a>
+    
+    <a href="//tags/linear/">linear</a>
+    
+    <a href="//tags/growth/">growth</a>
+    
+    
+</span>
+    </div>
+    <div class="markdown-body" id="post-summary">
+        Hacemos una estimación de las curvas de crecimiento usando B-splines e interpolación lineal y comparamos, usando validación cruzada para determinar el procedimiento con mejores resultados.
+Los datos a utilizar es growth, es una lista de pesos de 39 niños y 54 niñas de edades entre 1 a 18 años, para el estudio de crecimiento Berkeley. Los datos están disponible en el paquete fda, para acceder a su documentación basta usar:
+?growthSe generan algunas variables adicionales que será útiles en el análisis
+# longitud de las edadesnage = length(growth$age)# Número de casos masculinos y femeninosncasem = ncol(growth$hgtm);ncasef = ncol(growth$hgtf)# Rango de edadesrng = range(growth$age)agefine = seq(rng[1],rng[2],length=101)# registro de alturas masculinas y femeninashgtm = growth$hgtm;hgtf = growth$hgtf1.
+    </div>
+    <div id="post-exlink">
+        <a href="/2020-04-23-clase-02/"><i class="fas fa-angle-right"></i>&nbsp;READ MORE&nbsp;<i class="fas fa-angle-left"></i></a>
+    </div>
+</div>
+
+<div id="post">
+    <h2 id="post-title">
+        <a href="/2020-04-22-clase-03/">Clase 03: Derivadas de datos</a>
+    </h2>
+    <div id="post-meta">
+        <span>
+    <time datetime="2020-04-22 00:00:00 &#43;0000 UTC">2020-04-22</time> |
+</span>
+<span>
+    <span>673 words</span> |
+</span>
+<span>
+    
+    
+    <a href="//tags/derivadas/">derivadas</a>
+    
+    <a href="//tags/splines/">splines</a>
+    
+    <a href="//tags/tecator/">tecator</a>
+    
+    
+</span>
+    </div>
+    <div class="markdown-body" id="post-summary">
+        Se presenta la aproximación de derivadas en curvas, usando interpoladores lineales y splines.
+Los datos a utilizar es tecator, que contiene muestras de grasa, agua y proteina en carnes. Los datos están disponible en el paquete fda.usc, para acceder a su documentación basta usar:
+# se cargan los datosdata(&quot;tecator&quot;)#Llamado del help?tecatorCalculo de las derivadas de los datos del TecatorPrimero separamos el contenido de grasa y el resto de la variables, de tecator, para simplificación de código.
+fat = tecator$y$Fatdatos = tecator$absorp.fdataondas=datos$argvalsPor defecto la librería fda.usc usa por defecto approximaciones lineales en métodos gráficos y resúmenes, en este trabajo se usaran splines de orden 9 y de orden 41.
+    </div>
+    <div id="post-exlink">
+        <a href="/2020-04-22-clase-03/"><i class="fas fa-angle-right"></i>&nbsp;READ MORE&nbsp;<i class="fas fa-angle-left"></i></a>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+            </div>
+            
+            <div class="col-md-3 col-12 float-left" id="sidebar">
+                
+<div id="widget-pages">
+    <h5>Pages</h5>
+    <ul>
+        
+        
+        <li>
+            <a href="/">Home</a>
+        </li>
+        
+        <li>
+            <a href="/archives/">Archivos</a>
+        </li>
+        
+        <li>
+            <a href="/about/">About</a>
+        </li>
+        
+    </ul>
+</div>
+<div id="widget-tags">
+    <h5>Tags</h5>
+    <div>
+        
+        <span>
+            <a href="/tags/derivadas/">derivadas</a>
+        </span>
+        
+        <span>
+            <a href="/tags/fda/">fda</a>
+        </span>
+        
+        <span>
+            <a href="/tags/fda.usc/">fda.usc</a>
+        </span>
+        
+        <span>
+            <a href="/tags/functional-data-analysis/">Functional data analysis</a>
+        </span>
+        
+        <span>
+            <a href="/tags/growth/">growth</a>
+        </span>
+        
+        <span>
+            <a href="/tags/linear/">linear</a>
+        </span>
+        
+        <span>
+            <a href="/tags/movimiento-browniano/">Movimiento browniano</a>
+        </span>
+        
+        <span>
+            <a href="/tags/proceso-gaussiano/">Proceso Gaussiano</a>
+        </span>
+        
+        <span>
+            <a href="/tags/splines/">splines</a>
+        </span>
+        
+        <span>
+            <a href="/tags/tecator/">tecator</a>
+        </span>
+        
+    </div>
+</div>
+<div id="widget-links">
+    <h5>Links</h5>
+    <ul>
+        
+        <li>
+            <a href="https://github.com/asael697" target="_blank"><span>GitHub</span></a>
+        </li>
+        
+        <li>
+            <a href="https://twitter.com/Asael_am" target="_blank"><span>Twitter</span></a>
+        </li>
+        
+        <li>
+            <a href="https://www.jstatsoft.org/article/view/v051i04" target="_blank"><span>fda.usc</span></a>
+        </li>
+        
+    </ul>
+</div>
+
+            </div>
+            
+            
+            <div id="scroll-top">
+                <i class="fas fa-chevron-up"></i>
+            </div>
+            
+        </div>
+    </main>
+
+    <footer>
+    <div class="container-lg text-center">
+        <p>&copy; 2020 <a href="/">Juan Antonio Cuesta-Albetos, Asael Alonzo Matamoros</a> | Powered by <a href="https://github.com/amzrk2/hugo-theme-fuji/" target="_blank">Fuji</a> & <a href="https://gohugo.io/" target="_blank">Hugo</a> </p>
+    </div>
+</footer>
+    
+
+
+
+
+
+<script>
+    $("#scroll-top").click(function () {
+        $("html, body").animate({
+            scrollTop: 0
+        });
+    });
+</script>
+
+
+</body>
+
+</html>

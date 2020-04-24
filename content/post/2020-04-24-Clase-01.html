@@ -1,0 +1,125 @@
+---
+title: 'Clase 1: Introducción al Análisis de Datos Funcionales'
+author: "Juan Antonio Cuesta-Albetos"
+date: 2020-04-24
+categories: ["R"]
+tags: ["Functional data analysis", "fda", "fda.usc"]
+---
+
+
+
+<p>En este cuaderno damos una breve introducción al análisis de datos funcionales en R usando 2 librerías <a href="https://cran.r-project.org/web/packages/fda/fda.pdf">fda</a> de <em>Ramsey y Wickham</em> y su adaptación
+<a href="https://cran.r-project.org/web/packages/fda.usc/fda.usc.pdf">fda.usc</a> de <em>Bande, de la Fuente, Galeano, Nieto-Reyes, y Garcia-Portugues</em>. Dichos paquetes contienen rutinas para el análisis exploratorio de datos funcionales como profundidades, detección de curvas atípicas, modelos de regresión, clasificación supervisada y análisis funcional de varianzas.</p>
+<p>Para instalar el paquete y sus dependencias basta con correr el siguiente código:</p>
+<pre class="r"><code># Instalando el paquete
+install.packages(&quot;fda.usc&quot;)
+install.packages(&quot;ggplot2&quot;)
+# librerías
+library(fda.usc)
+library(ggplot2)</code></pre>
+<p>A continuación analizaremos los datos de crecimiento de jóvenes en Bekerley, entre los años 1 u 18, almacenados en la lista <strong>growth</strong>, para mayor información digitar el comando <em>help(growth)</em>. Dado que los datos esta en formato lista, haremos una tranformación de los datos para dejarlos en formato tabla, <em>data.frame</em> y tipo <em>tidy</em>.</p>
+<p>Para graficar los datos usando los métodos estandar de R basta con correr el siguiente código</p>
+<pre class="r"><code># Unir la data de los niños y niñas
+Datos=t(cbind(growth$hgtm,growth$hgtf))
+# Diferenciar las observaciones por su genero
+sexo=c(rep(&quot;boy&quot;,39),rep(&quot;girl&quot;,54))
+# Extraer las edades
+edad=growth$age
+# otros valores adicionales
+Mm=max(Datos);mm=min(Datos)
+Personas=c(1:93)
+# El gráfico es:
+plot(c(1,edad[31]),c(mm,Mm),
+     col=&quot;white&quot;,
+     xlab=&quot;edad&quot;,
+     ylab=&quot;altura&quot;, 
+     main=&quot;Curvas de crecimiento. 93 personas&quot;
+     )
+for (i in Personas) lines(edad,Datos[i,],pch=3,cex=.5)</code></pre>
+<p><img src="/post/2020-04-24-Clase-01_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>Ahora bien, para realizar una segmentación por el sexo hacemos:</p>
+<pre class="r"><code>color=rep(&quot;pink&quot;,93)                    # definimos el color rosado a las niñas 
+color[sexo==&quot;boy&quot;]=rep(&quot;lightblue&quot;,39)  # definimos el color azul para los niños
+
+plot(c(1,edad[31]),c(mm,Mm),
+     col=&quot;white&quot;,
+     xlab=&quot;edad&quot;,
+     ylab=&quot;altura&quot;, 
+     main=&quot;Curvas de crecimiento \n 93 personas&quot;
+     )
+for (i in Personas) lines(edad,Datos[i,],pch=3,cex=.5,col=color[i])</code></pre>
+<p><img src="/post/2020-04-24-Clase-01_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>En el último gráfico se observa que la curva de creciemiento de los niños es ligeramente mayor en las edades entre los 15 y 18 años, aunque en los primeros años el creciment para ambos sexos es el mismo.</p>
+<p>Ahora bien, recordemos que dicho gráfico reconstruye las curvas de crecimiento usando los puntos muestreados en la evolución del experimento, por lo que la data, sin realizar las interpolaciones lineales es poco informativo, y se muestra a continuación:</p>
+<pre class="r"><code>#Datos de crecimiento. Sin separar por sexos
+plot(c(1,edad[31]),c(mm,Mm),
+     col=&quot;white&quot;,
+     xlab=&quot;edad&quot;,
+     ylab=&quot;altura&quot;, 
+     main=&quot;Curvas de crecimiento.\n 93 personas&quot;
+     )
+for (i in Personas) points(edad,Datos[i,],pch=16,cex=.75)</code></pre>
+<p><img src="/post/2020-04-24-Clase-01_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<div id="tecator" class="section level2">
+<h2>Tecator</h2>
+<p><strong>tecator</strong> es una data guia dentro de la librera <em>fda.suc</em> que sirve como guie y ejemplo para mostrar la funcionalidad del paquete como tal, tecator contiene los registros de agua, grasa y proteina en muestras de carne. Son 215 muestras, donde las primeras 129 observaciones se usaron como conjunto de entreanmiento.</p>
+<pre class="r"><code># Tecator.
+data(tecator)                  # Cargar la data tecator
+absorp=tecator$absorp.fdata    # Extraer el conjunto absorp de tecator
+class(absorp)                  # Revisar el tipo de objecto </code></pre>
+<pre><code>## [1] &quot;fdata&quot;</code></pre>
+<p>La clase <em>fdata</em> es el tipo de objetos utilizados por la librería para almacenar datos de tipo funcional, este tipo de objetos tienen los metodos de plot sobrecargados, por lo tanto, graficar data funcional almacenada del tipo <em>“fdata”</em> basta simplemente realizar el siguiente comando:</p>
+<pre class="r"><code>plot(absorp,col = &quot;black&quot;)</code></pre>
+<p><img src="/post/2020-04-24-Clase-01_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+</div>
+<div id="datos-de-consumo-de-luz-electrica" class="section level1">
+<h1>Datos de consumo de luz electrica</h1>
+<p>El siguiente ejemplo son los registros de consumo de energia electrica en Santander, la data fue almacenada en el documento de texto <em>data.txt</em> que se adjunta con el documento, para cargarlo basta con que dicho archivo se encuentre en la misma carpeta donde se corre este cuaderno. Para cargarlo al sistema utilizaremos la función a continación:</p>
+<pre class="r"><code>DatosLuz = read.csv(&quot;DatosLuz.txt&quot;,sep = &quot; &quot;)
+d=dim(DatosLuz)
+d</code></pre>
+<pre><code>## [1] 103  96</code></pre>
+<p>La función <em>dim()</em> almacena las dimensiones de una matriz o data.frame, donde el primer elemento son las filas, y el segundo las columnas, para el caso de los resgistros de luz, se poseen 103 datos, y a cada uno de ellos se realizaron 96 mediciones. Procedemos a estandarizar los datos para que estos den valores entre o y 1.</p>
+<pre class="r"><code># Copia de los datos
+DatosLuzN=DatosLuz
+# Estandarizar
+for (i in 1:d[1]){
+  DatosLuzN[i,]=DatosLuz[i,]/(max(DatosLuz[i,])+.0001)
+}</code></pre>
+<p>Procedemos a graficar nuestros datos estandarizados</p>
+<pre class="r"><code># El tiempo entre las mediciones de los datos
+Tiempo=c(1:d[2])
+
+plot(c(1,96),c(0,1),
+     col=&quot;white&quot;,
+     xlab=&quot; Tiempo &quot;, 
+     ylab=&quot;consumo estandarizado &quot;, 
+     main=&quot;Curvas de consumo de luz&quot;
+     )
+for (i in 1:103) lines(Tiempo,DatosLuzN[i,],col=i)</code></pre>
+<p><img src="/post/2020-04-24-Clase-01_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>La data graficada es tanta, y cada uno de los registros de consumo tiene un comportamiento tan diferente del otro, que es muy dificil extraer patrones e información usando el gráfico anterior, para eso, extraeremos un pequeño conjunto de ellos y los graficaremos una pequeña muestra de ellos</p>
+<pre class="r"><code>set.seed(1921)      # Semilla aleatoria para que siempre genere la misma muestra
+s=sample(1:103, 20) #  Muestra de las filas a extraer para analizar 
+par(mfrow=c(2,2))   # El parametro para generar una malla gráfica de 2x2 
+
+# gráfico 1
+plot(c(1,96),c(0,1),col=&quot;white&quot;,xlab=&quot; Tiempo&quot;,ylab=&quot;consumo estandarizado&quot;, 
+     main=&quot;Curvas de consumo de luz&quot;)
+ for (i in 1:5) lines(Tiempo,DatosLuzN[s[i],],col=i)
+
+# gráfico 2
+plot(c(1,96),c(0,1),col=&quot;white&quot;,xlab=&quot; Tiempo &quot;, ylab=&quot;consumo estandarizado &quot;, main=&quot;Curvas de consumo de luz&quot;)
+ for (i in 6:10) lines(Tiempo,DatosLuzN[s[i],],col=i)
+
+# gráfico 3
+plot(c(1,96),c(0,1),col=&quot;white&quot;,xlab=&quot; Tiempo &quot;, ylab=&quot;consumo estandarizado &quot;, main=&quot;Curvas de consumo de luz&quot;)
+ for (i in 11:15)lines(Tiempo,DatosLuzN[s[i],],col=i)
+
+# gráfico 4
+plot(c(1,96),c(0,1),col=&quot;white&quot;,xlab=&quot; Tiempo &quot;, ylab=&quot;consumo estandarizado &quot;, main=&quot;Curvas de consumo de luz&quot;)
+ for (i in 16:20)lines(Tiempo,DatosLuzN[s[i],],col=i)</code></pre>
+<p><img src="/post/2020-04-24-Clase-01_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<pre class="r"><code>par(mfrow=c(1,1)) # Regresar a una sola malla
+rm(list = ls())   # Limpiar el ordenador eliminando todas las  variables</code></pre>
+</div>

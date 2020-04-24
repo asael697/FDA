@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta name="HandheldFriendly" content="True" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="generator" content="Hugo 0.69.0" />
+
+
+<link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/gh/amzrk2/poal-jsdelivr/amzrk2/favicons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/gh/amzrk2/poal-jsdelivr/amzrk2/favicons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/gh/amzrk2/poal-jsdelivr/amzrk2/favicons/favicon-16x16.png">
+<link rel="manifest" href="https://cdn.jsdelivr.net/gh/amzrk2/poal-jsdelivr/amzrk2/favicons/site.webmanifest">
+<link rel="mask-icon" href="https://cdn.jsdelivr.net/gh/amzrk2/poal-jsdelivr/amzrk2/favicons/safari-pinned-tab.svg" color="#8b81c3">
+<link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/amzrk2/poal-jsdelivr/amzrk2/favicons/favicon.ico">
+<meta name="msapplication-TileColor" content="#8b81c3">
+<meta name="msapplication-config" content="https://cdn.jsdelivr.net/gh/amzrk2/poal-jsdelivr/amzrk2/favicons/browserconfig.xml">
+<meta name="theme-color" content="#ffffff">
+
+
+<title>Clase 2: Analizando los datos de Crecimiento - Analisis de datos funcionales</title>
+
+<meta name="author" content="Juan Antonio Cuesta-Albetos" />
+<meta name="description" content="Hacemos una estimación de las curvas de crecimiento usando B-splines e interpolación lineal y comparamos, usando validación cruzada para determinar el procedimiento con mejores resultados.
+Los datos a utilizar es growth, es una lista de pesos de 39 niños y 54 niñas de edades entre 1 a 18 años, para el estudio de crecimiento Berkeley. Los datos están disponible en el paquete fda, para acceder a su documentación basta usar:
+?growthSe generan algunas variables adicionales que será útiles en el análisis
+# longitud de las edadesnage = length(growth$age)# Número de casos masculinos y femeninosncasem = ncol(growth$hgtm);ncasef = ncol(growth$hgtf)# Rango de edadesrng = range(growth$age)agefine = seq(rng[1],rng[2],length=101)# registro de alturas masculinas y femeninashgtm = growth$hgtm;hgtf = growth$hgtf1." />
+
+<meta name="keywords" content="Splines, linear, growth" />
+
+
+<meta property="og:title" content="Clase 2: Analizando los datos de Crecimiento" />
+<meta property="og:description" content="Hacemos una estimación de las curvas de crecimiento usando B-splines e interpolación lineal y comparamos, usando validación cruzada para determinar el procedimiento con mejores resultados.
+Los datos a utilizar es growth, es una lista de pesos de 39 niños y 54 niñas de edades entre 1 a 18 años, para el estudio de crecimiento Berkeley. Los datos están disponible en el paquete fda, para acceder a su documentación basta usar:
+?growthSe generan algunas variables adicionales que será útiles en el análisis
+# longitud de las edadesnage = length(growth$age)# Número de casos masculinos y femeninosncasem = ncol(growth$hgtm);ncasef = ncol(growth$hgtf)# Rango de edadesrng = range(growth$age)agefine = seq(rng[1],rng[2],length=101)# registro de alturas masculinas y femeninashgtm = growth$hgtm;hgtf = growth$hgtf1." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/2020-04-23-clase-02/" />
+<meta property="og:image" content="/img/og.png"/>
+<meta property="article:published_time" content="2020-04-23T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-04-23T00:00:00+00:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="/img/og.png"/>
+
+<meta name="twitter:title" content="Clase 2: Analizando los datos de Crecimiento"/>
+<meta name="twitter:description" content="Hacemos una estimación de las curvas de crecimiento usando B-splines e interpolación lineal y comparamos, usando validación cruzada para determinar el procedimiento con mejores resultados.
+Los datos a utilizar es growth, es una lista de pesos de 39 niños y 54 niñas de edades entre 1 a 18 años, para el estudio de crecimiento Berkeley. Los datos están disponible en el paquete fda, para acceder a su documentación basta usar:
+?growthSe generan algunas variables adicionales que será útiles en el análisis
+# longitud de las edadesnage = length(growth$age)# Número de casos masculinos y femeninosncasem = ncol(growth$hgtm);ncasef = ncol(growth$hgtf)# Rango de edadesrng = range(growth$age)agefine = seq(rng[1],rng[2],length=101)# registro de alturas masculinas y femeninashgtm = growth$hgtm;hgtf = growth$hgtf1."/>
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.min.css" />
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.min.js" integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/lazysizes@5.2.0/lazysizes.min.js" integrity="sha256-h2tMEmhemR2IN4wbbdNjj9LaDIjzwk2hralQwfJmBOE=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.0/css/all.min.css" integrity="sha256-h20CPZ0QyXlBuAw7A+KluUYx/3pK+c7lYEpqLTlxjYQ=" crossorigin="anonymous" />
+
+
+
+
+
+
+
+
+
+<body class="d-flex flex-column h-100">
+    <header>
+    
+    <div class="container-lg clearfix">
+        <div class="col-12 p-3">
+            <a id="main-title" href="/">Analisis de datos funcionales</a>
+            <span id="sub-title">Codigos y cuadernos para la clase</span>
+        </div>
+    </div>
+</header>
+
+    <main>
+        <div class="container-lg clearfix">
+            
+            <div class="col-md-9 col-12 float-left" id="content">
+                
+<article>
+    <h4 id="post-title">
+        <a href="/2020-04-23-clase-02/">Clase 2: Analizando los datos de Crecimiento</a>
+    </h4>
+    <div id="post-meta">
+        <span>
+    <time datetime="2020-04-23 00:00:00 &#43;0000 UTC">2020-04-23</time> |
+</span>
+<span>
+    <span>605 words</span> |
+</span>
+<span>
+    
+    
+    <a href="//tags/splines/">Splines</a>
+    
+    <a href="//tags/linear/">linear</a>
+    
+    <a href="//tags/growth/">growth</a>
+    
+    
+</span>
+    </div>
+    
+    <div class="markdown-body" id="post-content">
+        
+
+
+<p>Hacemos una estimación de las curvas de crecimiento usando B-splines e interpolación lineal y comparamos, usando validación cruzada para determinar el procedimiento con mejores resultados.</p>
+<p>Los datos a utilizar es <strong>growth</strong>, es una lista de pesos de 39 niños y 54 niñas de edades entre 1 a 18 años, para el estudio de crecimiento Berkeley. Los datos están disponible en el paquete <strong>fda</strong>, para acceder a su documentación basta usar:</p>
+<pre class="r"><code>?growth</code></pre>
+<p>Se generan algunas variables adicionales que será útiles en el análisis</p>
+<pre class="r"><code># longitud de las edades
+nage  =   length(growth$age)
+
+# Número de casos masculinos y femeninos
+ncasem =  ncol(growth$hgtm);ncasef =  ncol(growth$hgtf)
+
+# Rango de edades
+rng  = range(growth$age)
+agefine = seq(rng[1],rng[2],length=101)
+
+# registro de alturas masculinas y femeninas
+hgtm = growth$hgtm;hgtf = growth$hgtf</code></pre>
+<div id="se-suavizan-los-datos" class="section level1">
+<h1>1. Se suavizan los datos</h1>
+<p>Esta técnica utiliza los métodos de suavizado habituales para suavizar los datos, pero no se garantiza que produzca un ajuste monótono. Esto puede no ser muy importante para la estimación de la función de altura, pero puede tener consecuencias mucho más graves para la velocidad y aceleraciones. Vea el método de suavizado monótono a continuación para obtener una mejor solución, pero con una sobrecarga del cálculo.</p>
+<div id="creación-del-objeto-fd" class="section level3">
+<h3>Creación del objeto fd</h3>
+<p>Una base B-spline basis con nodos en valores de edad y orden 6, es utilizado. Llamando a la función <em>smooth.basisPar()</em> obtenemos un spline cúbico. Sin embargo, para obtener una imagen
+suavizada de la aceleración, se necesita un spline de grado 5 y ordén 6.</p>
+<pre class="r"><code># nodos 
+age = growth$age
+
+#  orden del spline
+norder = 6
+
+# Generamos la base
+nbasis = length(age) + norder - 2
+
+# base spline para
+hgtbasis = create.bspline.basis(range(age), nbasis, norder, age)</code></pre>
+</div>
+<div id="suavizando-los-objetos-penalizando-la-4ta-derivada" class="section level3">
+<h3>Suavizando los objetos, penalizando la 4ta derivada</h3>
+<p>Esto devuelve un estimador más suave de la función de aceleración</p>
+<pre class="r"><code>growfdPar = fdPar(fdobj = hgtbasis,Lfdobj = 4, lambda = 1e-2)</code></pre>
+<p>Hasta aqui hemos creado la base que vamos a utlizar para desarrollar las curvas. A partir de ahora realizamos validación cruzada. Las siguientes lineas de códigos son para generar una matríz que almacene los errores por método y género, esto es, para simplificar la presentación de los resultados.</p>
+<pre class="r"><code># Matriz para almacenar los errores
+error = matrix(0,nrow = 3,ncol = 2)
+
+#Nombres filas y columnas
+colnames(error)  = c(&quot;Splines&quot;,&quot;lineal&quot;)
+row.names(error) = c(&quot;Hombres&quot;,&quot;mujeres&quot;,&quot;Total&quot;)</code></pre>
+<p>El método a utilizar es un leave one out cross validation, la idea es eliminar una observación, predecirla con el método utilizado, y calcular el error de predicción.</p>
+<p>Cada método se aplica a cada género (hombre y mujer), en el suavizado por splines, primero se estiman los coeficientes de la base, segundo se realiza una predicción, y se finaliza calculando el error. En el suavizado lineal se aplican los mismos pasos, pero sin necesidad de recurrir a las funciones de <em>fda</em></p>
+<pre class="r"><code>for (i in 2:(nage-1)){
+  # Splines Hombres
+  datosi= hgtm[-i,]
+  curva.suave = smooth.basis(age[-i],datosi,growfdPar)$fd       # suavizado
+  pred.suave  = eval.fd(age[i],curva.suave)                     # Predicción
+  error[1,1] =  error[1,1] + sum(abs(pred.suave - hgtm[i,])^2 ) # error spline
+  
+  #incremento lineal Hombres
+  incrementos = (hgtm[i+1,] - hgtm[i-1,])*(age[i]-age[i-1])/(age[i+1]-age[i-1])
+  
+  pred.lineal = hgtm[i-1,] + incrementos                        # predicción
+  error[1,2]  = error[1,2] + sum(abs(pred.lineal - hgtm[i,])^2 )# error lineal
+  
+  # Splines Mujeres
+  datosi = hgtf[-i,]
+  curva.suave = smooth.basis(age[-i],datosi,growfdPar)$fd       # suavizado
+  pred.suave  = eval.fd(age[i],curva.suave)                     # Predicción
+  error[2,1]  = error[2,1] + sum(abs(pred.suave - hgtf[i,])^2 ) # error spline 
+  
+  #incremento lineal Mujeres
+  incrementos =(hgtf[i+1,]- hgtf[i-1,])*(age[i]-age[i-1])/(age[i+1]-age[i-1])
+  
+  pred.lineal = hgtf[i-1,]+ incrementos                         # predicción
+  error[2,2]  = error[2,2] + sum(abs(pred.lineal - hgtf[i,])^2 )# error lineal
+}
+
+# Errores totales
+error[3,] = apply(error,2,sum)</code></pre>
+<p>El error obtenido para cada método es:</p>
+<pre class="r"><code>error</code></pre>
+<pre><code>##          Splines   lineal
+## Hombres 292.0091 258.6784
+## mujeres 405.0673 368.8425
+## Total   697.0764 627.5210</code></pre>
+<p>Por lo tanto, el suavizado lineal ofrece un mejor ajuste a la curva de alturas.</p>
+</div>
+</div>
+
+    </div>
+</article>
+
+<div class="markdown-body" id="license">
+    <blockquote>
+        <p>Unless otherwise noted, the content of this site is licensed under <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License (CC BY-NC-SA 4.0)</a>.</p>
+    </blockquote>
+</div>
+
+
+
+
+            </div>
+            
+            <div class="col-md-3 col-12 float-left" id="sidebar">
+                
+<div id="widget-toc">
+    <h5>TOC</h5>
+    
+</div>
+
+<div id="widget-pages">
+    <h5>Pages</h5>
+    <ul>
+        
+        
+        <li>
+            <a href="/">Home</a>
+        </li>
+        
+        <li>
+            <a href="/archives/">Archivos</a>
+        </li>
+        
+        <li>
+            <a href="/about/">About</a>
+        </li>
+        
+    </ul>
+</div>
+<div id="widget-tags">
+    <h5>Tags</h5>
+    <div>
+        
+        <span>
+            <a href="/tags/derivadas/">derivadas</a>
+        </span>
+        
+        <span>
+            <a href="/tags/fda/">fda</a>
+        </span>
+        
+        <span>
+            <a href="/tags/fda.usc/">fda.usc</a>
+        </span>
+        
+        <span>
+            <a href="/tags/functional-data-analysis/">Functional data analysis</a>
+        </span>
+        
+        <span>
+            <a href="/tags/growth/">growth</a>
+        </span>
+        
+        <span>
+            <a href="/tags/linear/">linear</a>
+        </span>
+        
+        <span>
+            <a href="/tags/movimiento-browniano/">Movimiento browniano</a>
+        </span>
+        
+        <span>
+            <a href="/tags/proceso-gaussiano/">Proceso Gaussiano</a>
+        </span>
+        
+        <span>
+            <a href="/tags/splines/">splines</a>
+        </span>
+        
+        <span>
+            <a href="/tags/tecator/">tecator</a>
+        </span>
+        
+    </div>
+</div>
+<div id="widget-links">
+    <h5>Links</h5>
+    <ul>
+        
+        <li>
+            <a href="https://github.com/asael697" target="_blank"><span>GitHub</span></a>
+        </li>
+        
+        <li>
+            <a href="https://twitter.com/Asael_am" target="_blank"><span>Twitter</span></a>
+        </li>
+        
+        <li>
+            <a href="https://www.jstatsoft.org/article/view/v051i04" target="_blank"><span>fda.usc</span></a>
+        </li>
+        
+    </ul>
+</div>
+
+            </div>
+            
+            
+            <div id="scroll-top">
+                <i class="fas fa-chevron-up"></i>
+            </div>
+            
+        </div>
+    </main>
+
+    <footer>
+    <div class="container-lg text-center">
+        <p>&copy; 2020 <a href="/">Juan Antonio Cuesta-Albetos, Asael Alonzo Matamoros</a> | Powered by <a href="https://github.com/amzrk2/hugo-theme-fuji/" target="_blank">Fuji</a> & <a href="https://gohugo.io/" target="_blank">Hugo</a> </p>
+    </div>
+</footer>
+    
+
+
+
+
+<script>
+    $("#widget-toc a").click(function () {
+        $("html, body").animate({
+            scrollTop: $($(this).attr("href")).offset().top
+        });
+        return false;
+    });
+</script>
+
+
+
+<script>
+    $("#scroll-top").click(function () {
+        $("html, body").animate({
+            scrollTop: 0
+        });
+    });
+</script>
+
+
+</body>
+
+</html>
