@@ -103,9 +103,7 @@
 </span>
     </div>
     <div class="markdown-body" id="post-summary">
-        En este cuaderno damos una breve introduccion al analisis de datos funcionales en R usando 2 librerias fda de Ramsey y Wickham y su adaptacionfda.usc de Bande, de la Fuente, Galeano, Nieto-Reyes, y Garcia-Portugues. Dichos paquetes contienen rutinas para el analisis exploratorio de datos funcionales como profundidades, deteccion de curvas atipicas, modelos de regresion, clasificacion supervisada y analisis funcional de varianzas.
-Para instalar el paquete y sus dependencias basta con correr el siguiente codigo:
-# Instalando el paqueteinstall.packages(&quot;fda.usc&quot;)install.packages(&quot;ggplot2&quot;)# libreriaslibrary(fda.usc)library(ggplot2)A continuacion analizaremos los datos de crecimiento de jovenes en Bekerley, entre los anios 1 u 18, almacenados en la lista growth, para mayor informacion digitar el comando help(growth).
+        En este cuaderno damos una breve introduccion al analisis de datos funcionales en R usando 2 librerias fda de Ramsey y Wickham y su adaptacionfda.
     </div>
     <div id="post-exlink">
         <a href="/2020-04-24-clase-01/"><i class="fas fa-angle-right"></i>&nbsp;READ MORE&nbsp;<i class="fas fa-angle-left"></i></a>
@@ -137,9 +135,6 @@ Para instalar el paquete y sus dependencias basta con correr el siguiente codigo
     </div>
     <div class="markdown-body" id="post-summary">
         Hacemos una estimacion de las curvas de crecimiento usando B-splines e interpolacion lineal y comparamos, usando validacion cruzada para determinar el procedimiento con mejores resultados.
-Los datos a utilizar es growth, es una lista de pesos de 39 ninios y 54 ninias de edades entre 1 a 18 anios, para el estudio de crecimiento Berkeley. Los datos estan disponible en el paquete fda, para acceder a su documentacion basta usar:
-?growthSe generan algunas variables adicionales que sera utiles en el analisis
-# longitud de las edadesnage = length(growth$age)# Numero de casos masculinos y femeninosncasem = ncol(growth$hgtm);ncasef = ncol(growth$hgtf)# Rango de edadesrng = range(growth$age)agefine = seq(rng[1],rng[2],length=101)# registro de alturas masculinas y femeninashgtm = growth$hgtm;hgtf = growth$hgtf1.
     </div>
     <div id="post-exlink">
         <a href="/2020-04-23-clase-02/"><i class="fas fa-angle-right"></i>&nbsp;READ MORE&nbsp;<i class="fas fa-angle-left"></i></a>
@@ -171,9 +166,7 @@ Los datos a utilizar es growth, es una lista de pesos de 39 ninios y 54 ninias d
     </div>
     <div class="markdown-body" id="post-summary">
         Se presenta la aproximacion de derivadas en curvas, usando interpoladores lineales y splines.
-Los datos a utilizar es tecator, que contiene muestras de grasa, agua y proteina en carnes. Los datos estan disponible en el paquete fda.usc, para acceder a su documentacion basta usar:
-# se cargan los datosdata(&quot;tecator&quot;)#Llamado del help?tecatorCalculo de las derivadas de los datos del TecatorPrimero separamos el contenido de grasa y el resto de la variables, de tecator, para simplificacion de codigo.
-fat = tecator$y$Fatdatos = tecator$absorp.fdataondas=datos$argvalsPor defecto la libreria fda.usc usa por defecto approximaciones lineales en metodos graficos y resumenes, en este trabajo se usaran splines de orden 9 y de orden 41.
+Los datos a utilizar es tecator, que contiene muestras de grasa, agua y proteina en carnes.
     </div>
     <div id="post-exlink">
         <a href="/2020-04-22-clase-03/"><i class="fas fa-angle-right"></i>&nbsp;READ MORE&nbsp;<i class="fas fa-angle-left"></i></a>
@@ -203,9 +196,6 @@ fat = tecator$y$Fatdatos = tecator$absorp.fdataondas=datos$argvalsPor defecto
     </div>
     <div class="markdown-body" id="post-summary">
         Esta practica tiene dos partes. En la primera (este fidhero) creamos los datos, en la segunda, se hace el programa para suavizar la curva utilizando el nucleo gaussiano.
-Parte 1: Ruido Blanco amortiguadoEmpezamos por determinar la curva que vamos a utilizar Va a estar definida en el intervalo [0,1] N es el numero de puntos en los que la tenemos definida:
-N=101t=seq(0,1,length.out = N)Va a ser una curva de la forma:\[X(t)= t^d(asin(2k\pi t)+(1-a)cos(2k\pi t)).\]Definimos los siguientes parametros:
-k=1;a=1;b=1;d=1# Reparametrizamosa=a/(a+b)b=1-a# generamos los datosX=(a*sin(2*k*pi*t)+b*cos(2*k*pi*t))*(t^d)plot(t,X,col=&quot;grey&quot;,type=&quot;l&quot;,xlab=&quot;&quot;,ylab=&quot;&quot;)abline(h=0,col=&quot;grey&quot;,lty=2)Ahora cogemos una muestra de puntos en los que vamos a observar la curva con cierto error.
     </div>
     <div id="post-exlink">
         <a href="/2020-04-21-clase-04/"><i class="fas fa-angle-right"></i>&nbsp;READ MORE&nbsp;<i class="fas fa-angle-left"></i></a>

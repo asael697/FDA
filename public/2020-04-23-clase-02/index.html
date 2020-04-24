@@ -23,19 +23,13 @@
 <title>Clase 2: Analizando los datos de Crecimiento - Analisis de datos funcionales</title>
 
 <meta name="author" content="Juan Antonio Cuesta-Albetos" />
-<meta name="description" content="Hacemos una estimacion de las curvas de crecimiento usando B-splines e interpolacion lineal y comparamos, usando validacion cruzada para determinar el procedimiento con mejores resultados.
-Los datos a utilizar es growth, es una lista de pesos de 39 ninios y 54 ninias de edades entre 1 a 18 anios, para el estudio de crecimiento Berkeley. Los datos estan disponible en el paquete fda, para acceder a su documentacion basta usar:
-?growthSe generan algunas variables adicionales que sera utiles en el analisis
-# longitud de las edadesnage = length(growth$age)# Numero de casos masculinos y femeninosncasem = ncol(growth$hgtm);ncasef = ncol(growth$hgtf)# Rango de edadesrng = range(growth$age)agefine = seq(rng[1],rng[2],length=101)# registro de alturas masculinas y femeninashgtm = growth$hgtm;hgtf = growth$hgtf1." />
+<meta name="description" content="Hacemos una estimacion de las curvas de crecimiento usando B-splines e interpolacion lineal y comparamos, usando validacion cruzada para determinar el procedimiento con mejores resultados." />
 
 <meta name="keywords" content="Splines, linear, growth" />
 
 
 <meta property="og:title" content="Clase 2: Analizando los datos de Crecimiento" />
-<meta property="og:description" content="Hacemos una estimacion de las curvas de crecimiento usando B-splines e interpolacion lineal y comparamos, usando validacion cruzada para determinar el procedimiento con mejores resultados.
-Los datos a utilizar es growth, es una lista de pesos de 39 ninios y 54 ninias de edades entre 1 a 18 anios, para el estudio de crecimiento Berkeley. Los datos estan disponible en el paquete fda, para acceder a su documentacion basta usar:
-?growthSe generan algunas variables adicionales que sera utiles en el analisis
-# longitud de las edadesnage = length(growth$age)# Numero de casos masculinos y femeninosncasem = ncol(growth$hgtm);ncasef = ncol(growth$hgtf)# Rango de edadesrng = range(growth$age)agefine = seq(rng[1],rng[2],length=101)# registro de alturas masculinas y femeninashgtm = growth$hgtm;hgtf = growth$hgtf1." />
+<meta property="og:description" content="Hacemos una estimacion de las curvas de crecimiento usando B-splines e interpolacion lineal y comparamos, usando validacion cruzada para determinar el procedimiento con mejores resultados." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/2020-04-23-clase-02/" />
 <meta property="og:image" content="/img/og.png"/>
@@ -46,10 +40,7 @@ Los datos a utilizar es growth, es una lista de pesos de 39 ninios y 54 ninias d
 <meta name="twitter:image" content="/img/og.png"/>
 
 <meta name="twitter:title" content="Clase 2: Analizando los datos de Crecimiento"/>
-<meta name="twitter:description" content="Hacemos una estimacion de las curvas de crecimiento usando B-splines e interpolacion lineal y comparamos, usando validacion cruzada para determinar el procedimiento con mejores resultados.
-Los datos a utilizar es growth, es una lista de pesos de 39 ninios y 54 ninias de edades entre 1 a 18 anios, para el estudio de crecimiento Berkeley. Los datos estan disponible en el paquete fda, para acceder a su documentacion basta usar:
-?growthSe generan algunas variables adicionales que sera utiles en el analisis
-# longitud de las edadesnage = length(growth$age)# Numero de casos masculinos y femeninosncasem = ncol(growth$hgtm);ncasef = ncol(growth$hgtf)# Rango de edadesrng = range(growth$age)agefine = seq(rng[1],rng[2],length=101)# registro de alturas masculinas y femeninashgtm = growth$hgtm;hgtf = growth$hgtf1."/>
+<meta name="twitter:description" content="Hacemos una estimacion de las curvas de crecimiento usando B-splines e interpolacion lineal y comparamos, usando validacion cruzada para determinar el procedimiento con mejores resultados."/>
 
 
 

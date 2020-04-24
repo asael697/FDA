@@ -105,9 +105,6 @@
     </div>
     <div class="markdown-body" id="post-summary">
         Esta practica tiene dos partes. En la primera (este fidhero) creamos los datos, en la segunda, se hace el programa para suavizar la curva utilizando el nucleo gaussiano.
-Parte 1: Ruido Blanco amortiguadoEmpezamos por determinar la curva que vamos a utilizar Va a estar definida en el intervalo [0,1] N es el numero de puntos en los que la tenemos definida:
-N=101t=seq(0,1,length.out = N)Va a ser una curva de la forma:\[X(t)= t^d(asin(2k\pi t)+(1-a)cos(2k\pi t)).\]Definimos los siguientes parametros:
-k=1;a=1;b=1;d=1# Reparametrizamosa=a/(a+b)b=1-a# generamos los datosX=(a*sin(2*k*pi*t)+b*cos(2*k*pi*t))*(t^d)plot(t,X,col=&quot;grey&quot;,type=&quot;l&quot;,xlab=&quot;&quot;,ylab=&quot;&quot;)abline(h=0,col=&quot;grey&quot;,lty=2)Ahora cogemos una muestra de puntos en los que vamos a observar la curva con cierto error.
     </div>
     <div id="post-exlink">
         <a href="/2020-04-21-clase-04/"><i class="fas fa-angle-right"></i>&nbsp;READ MORE&nbsp;<i class="fas fa-angle-left"></i></a>

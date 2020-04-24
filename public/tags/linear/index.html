@@ -107,9 +107,6 @@
     </div>
     <div class="markdown-body" id="post-summary">
         Hacemos una estimacion de las curvas de crecimiento usando B-splines e interpolacion lineal y comparamos, usando validacion cruzada para determinar el procedimiento con mejores resultados.
-Los datos a utilizar es growth, es una lista de pesos de 39 ninios y 54 ninias de edades entre 1 a 18 anios, para el estudio de crecimiento Berkeley. Los datos estan disponible en el paquete fda, para acceder a su documentacion basta usar:
-?growthSe generan algunas variables adicionales que sera utiles en el analisis
-# longitud de las edadesnage = length(growth$age)# Numero de casos masculinos y femeninosncasem = ncol(growth$hgtm);ncasef = ncol(growth$hgtf)# Rango de edadesrng = range(growth$age)agefine = seq(rng[1],rng[2],length=101)# registro de alturas masculinas y femeninashgtm = growth$hgtm;hgtf = growth$hgtf1.
     </div>
     <div id="post-exlink">
         <a href="/2020-04-23-clase-02/"><i class="fas fa-angle-right"></i>&nbsp;READ MORE&nbsp;<i class="fas fa-angle-left"></i></a>

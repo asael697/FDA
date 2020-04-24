@@ -1,4 +1,4 @@
-baseURL = "https://example.com"
+baseURL = "https://fdaunican.netlify.app"
 title = "Analisis de datos funcionales"
 theme = "hugo-theme-fuji"
 hasCJKLanguage = true
@@ -11,7 +11,7 @@ disableKinds = ["RSS", "taxonomyTerm"]
 defaultContentLanguage = "en"
 languageCode = "en"
 
-summaryLength = 100 # Custom cummary length, add <!--more--> in post file to custom split point
+summaryLength = 20 # Custom cummary length, add <!--more--> in post file to custom split point
 paginate = 10
 
 # googleAnalytics = "UA-000000000-0" # Set your Google Analytics UA here, or comment out to disable
