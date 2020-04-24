@@ -8,7 +8,7 @@ tags: ["Movimiento browniano", "Proceso Gaussiano"]
 
 
 
-<p>Esta práctica tiene dos partes. En la primera (este fidhero) creamos los datos, en la segunda, se hace el programa para suavizar la curva utilizando el nucleo gaussiano.</p>
+<p>Esta practica tiene dos partes. En la primera (este fidhero) creamos los datos, en la segunda, se hace el programa para suavizar la curva utilizando el nucleo gaussiano.</p>
 <div id="parte-1-ruido-blanco-amortiguado" class="section level3">
 <h3>Parte 1: Ruido Blanco amortiguado</h3>
 <p>Empezamos por determinar la curva que vamos a utilizar Va a estar definida en el intervalo [0,1] N es el numero de puntos en los que la tenemos definida:</p>
@@ -16,7 +16,7 @@ tags: ["Movimiento browniano", "Proceso Gaussiano"]
 t=seq(0,1,length.out = N)</code></pre>
 <p>Va a ser una curva de la forma:
 <span class="math display">\[X(t)= t^d(asin(2k\pi t)+(1-a)cos(2k\pi t)).\]</span>
-Definimos los siguientes parámetros:</p>
+Definimos los siguientes parametros:</p>
 <pre class="r"><code>k=1;a=1;b=1;d=1
 
 # Reparametrizamos
@@ -53,7 +53,7 @@ plot(muestra_t,muestra_X,pch=8,cex=.5,col=&quot;green&quot;,type = &quot;l&quot;
 s=2
 N=1000
 I=seq(0,1,length.out = N+1)</code></pre>
-<p>Ahora calculamos el incremento, cuya raíz cuadrada es la desviación típica de los datos</p>
+<p>Ahora calculamos el incremento, cuya raiz cuadrada es la desviacion tipica de los datos</p>
 <pre class="r"><code>delta=I[2]-I[1]
 Xs = delta^.5*cbind(rep(0,n),matrix(rnorm(N*n),nrow=n))
 Ys = delta^.5*cbind(rep(0,n),matrix(s*rnorm(N*n),nrow=n))
@@ -75,7 +75,7 @@ for (i in 1:n){
   lines(I,Bs[i,],col=color)
 }</code></pre>
 <p><img src="/post/2020-04-21-Clase-04_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
-<p>De acuerdo con la teoría, debería ser SENCILLISIMO identificar los tres de cada clase</p>
+<p>De acuerdo con la teoria, deberia ser SENCILLISIMO identificar los tres de cada clase</p>
 <pre class="r"><code>plot(x = c(0,1),y = c(min(c(B,Bs)),max(c(B,Bs))),col= 0,xlab=&quot;&quot;,ylab=&quot;&quot;,
      main=paste0(&quot;Trayectorias de Brownianos. Unos estandard. Otros= &quot;, s,&quot;B&quot;))
 abline(h=0,col=&quot;grey&quot;)
@@ -93,5 +93,5 @@ for (i in 1:n){
   suma.cuadrados[2*n-i+1]=sum(Ys[i,]^2)
 }
 round(suma.cuadrados,3)</code></pre>
-<pre><code>## [1] 0.874 0.916 1.012 4.030 4.086 4.283</code></pre>
+<pre><code>## [1] 0.978 1.030 0.980 3.932 4.276 3.850</code></pre>
 </div>
