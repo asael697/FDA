@@ -5,171 +5,90 @@
     <link>/tags/</link>
     <description>Recent content in Tags on Analisis de datos funcionales</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Fri, 24 Apr 2020 00:00:00 +0000</lastBuildDate>
+    <language>es</language>
+    <lastBuildDate>Sun, 26 Apr 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>fda</title>
-      <link>/tags/fda/</link>
-      <pubDate>Fri, 24 Apr 2020 00:00:00 +0000</pubDate>
+      <title>movimiento de Brown</title>
+      <link>/tags/movimiento-de-brown/</link>
+      <pubDate>Sun, 26 Apr 2020 00:00:00 +0000</pubDate>
       
-      <guid>/tags/fda/</guid>
+      <guid>/tags/movimiento-de-brown/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>fda.usc</title>
-      <link>/tags/fda.usc/</link>
-      <pubDate>Fri, 24 Apr 2020 00:00:00 +0000</pubDate>
+      <title>proceso gaussianos</title>
+      <link>/tags/proceso-gaussianos/</link>
+      <pubDate>Sun, 26 Apr 2020 00:00:00 +0000</pubDate>
       
-      <guid>/tags/fda.usc/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Functional data analysis</title>
-      <link>/tags/functional-data-analysis/</link>
-      <pubDate>Fri, 24 Apr 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/functional-data-analysis/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>growth</title>
-      <link>/tags/growth/</link>
-      <pubDate>Thu, 23 Apr 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/growth/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>linear</title>
-      <link>/tags/linear/</link>
-      <pubDate>Thu, 23 Apr 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/linear/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>splines</title>
-      <link>/tags/splines/</link>
-      <pubDate>Thu, 23 Apr 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/splines/</guid>
+      <guid>/tags/proceso-gaussianos/</guid>
       <description></description>
     </item>
     
     <item>
       <title>derivadas</title>
       <link>/tags/derivadas/</link>
-      <pubDate>Wed, 22 Apr 2020 00:00:00 +0000</pubDate>
+      <pubDate>Sat, 25 Apr 2020 00:00:00 +0000</pubDate>
       
       <guid>/tags/derivadas/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>tecator</title>
-      <link>/tags/tecator/</link>
-      <pubDate>Wed, 22 Apr 2020 00:00:00 +0000</pubDate>
+      <title>plots</title>
+      <link>/tags/plots/</link>
+      <pubDate>Sat, 25 Apr 2020 00:00:00 +0000</pubDate>
       
-      <guid>/tags/tecator/</guid>
+      <guid>/tags/plots/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>Movimiento browniano</title>
-      <link>/tags/movimiento-browniano/</link>
-      <pubDate>Tue, 21 Apr 2020 00:00:00 +0000</pubDate>
+      <title>splines</title>
+      <link>/tags/splines/</link>
+      <pubDate>Sat, 25 Apr 2020 00:00:00 +0000</pubDate>
       
-      <guid>/tags/movimiento-browniano/</guid>
+      <guid>/tags/splines/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>Proceso Gaussiano</title>
-      <link>/tags/proceso-gaussiano/</link>
-      <pubDate>Tue, 21 Apr 2020 00:00:00 +0000</pubDate>
+      <title>cross validation</title>
+      <link>/tags/cross-validation/</link>
+      <pubDate>Fri, 24 Apr 2020 00:00:00 +0000</pubDate>
       
-      <guid>/tags/proceso-gaussiano/</guid>
+      <guid>/tags/cross-validation/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>css</title>
-      <link>/tags/css/</link>
-      <pubDate>Fri, 24 Jan 2020 00:00:00 +0000</pubDate>
+      <title>regresion</title>
+      <link>/tags/regresion/</link>
+      <pubDate>Fri, 24 Apr 2020 00:00:00 +0000</pubDate>
       
-      <guid>/tags/css/</guid>
+      <guid>/tags/regresion/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>html</title>
-      <link>/tags/html/</link>
-      <pubDate>Fri, 24 Jan 2020 00:00:00 +0000</pubDate>
+      <title>fda</title>
+      <link>/tags/fda/</link>
+      <pubDate>Thu, 23 Apr 2020 00:00:00 +0000</pubDate>
       
-      <guid>/tags/html/</guid>
+      <guid>/tags/fda/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>markdown</title>
-      <link>/tags/markdown/</link>
-      <pubDate>Fri, 24 Jan 2020 00:00:00 +0000</pubDate>
+      <title>functional data</title>
+      <link>/tags/functional-data/</link>
+      <pubDate>Thu, 23 Apr 2020 00:00:00 +0000</pubDate>
       
-      <guid>/tags/markdown/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>themes</title>
-      <link>/tags/themes/</link>
-      <pubDate>Fri, 24 Jan 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/themes/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>privacy</title>
-      <link>/tags/privacy/</link>
-      <pubDate>Thu, 02 Jan 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/privacy/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>shortcodes</title>
-      <link>/tags/shortcodes/</link>
-      <pubDate>Thu, 02 Jan 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/shortcodes/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>text</title>
-      <link>/tags/text/</link>
-      <pubDate>Tue, 17 Dec 2019 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/text/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>emoji</title>
-      <link>/tags/emoji/</link>
-      <pubDate>Tue, 03 Dec 2019 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/emoji/</guid>
+      <guid>/tags/functional-data/</guid>
       <description></description>
     </item>
     

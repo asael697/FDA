@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.69.2" />
+
+
+<title>Clase 2: Analizando los datos de Crecimiento - Analisis de datos funcionales</title>
+<meta property="og:title" content="Clase 2: Analizando los datos de Crecimiento - Analisis de datos funcionales">
+
+
+  <link href='/favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/rstudio/blogdown">GitHub</a></li>
+    
+    <li><a href="https://twitter.com/rstudio">Twitter</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">3 min read</span>
+    
+
+    <h1 class="article-title">Clase 2: Analizando los datos de Crecimiento</h1>
+
+    
+    <span class="article-date">2020-04-24</span>
+    
+
+    <div class="article-content">
+      
+
+
+<p>Hacemos una estimacion de las curvas de crecimiento usando B-splines e interpolacion lineal y comparamos, usando validacion cruzada para determinar el procedimiento con mejores resultados.</p>
+<p>Los datos a utilizar es <strong>growth</strong>, es una lista de pesos de 39 ninios y 54 ninias de edades entre 1 a 18 anios, para el estudio de crecimiento Berkeley. Los datos estan disponible en el paquete <strong>fda</strong>, para acceder a su documentacion basta usar:</p>
+<pre class="r"><code>?growth</code></pre>
+<p>Se generan algunas variables adicionales que sera utiles en el analisis</p>
+<pre class="r"><code># longitud de las edades
+nage  =   length(growth$age)
+
+# Numero de casos masculinos y femeninos
+ncasem =  ncol(growth$hgtm);ncasef =  ncol(growth$hgtf)
+
+# Rango de edades
+rng  = range(growth$age)
+agefine = seq(rng[1],rng[2],length=101)
+
+# registro de alturas masculinas y femeninas
+hgtm = growth$hgtm;hgtf = growth$hgtf</code></pre>
+<div id="se-suavizan-los-datos" class="section level1">
+<h1>1. Se suavizan los datos</h1>
+<p>Esta tecnica utiliza los metodos de suavizado habituales para suavizar los datos, pero no se garantiza que produzca un ajuste monotono. Esto puede no ser muy importante para la estimacion de la funcion de altura, pero puede tener consecuencias mucho mas graves para la velocidad y aceleraciones. Vea el metodo de suavizado monotono a continuacion para obtener una mejor solucion, pero con una sobrecarga del calculo.</p>
+<div id="creacion-del-objeto-fd" class="section level3">
+<h3>Creacion del objeto fd</h3>
+<p>Una base B-spline basis con nodos en valores de edad y orden 6, es utilizado. Llamando a la funcion <em>smooth.basisPar()</em> obtenemos un spline cubico. Sin embargo, para obtener una imagen
+suavizada de la aceleracion, se necesita un spline de grado 5 y orden 6.</p>
+<pre class="r"><code># nodos 
+age = growth$age
+
+#  orden del spline
+norder = 6
+
+# Generamos la base
+nbasis = length(age) + norder - 2
+
+# base spline para
+hgtbasis = create.bspline.basis(range(age), nbasis, norder, age)</code></pre>
+</div>
+<div id="suavizando-los-objetos-penalizando-la-4ta-derivada" class="section level3">
+<h3>Suavizando los objetos, penalizando la 4ta derivada</h3>
+<p>Esto devuelve un estimador mas suave de la funcion de aceleracion</p>
+<pre class="r"><code>growfdPar = fdPar(fdobj = hgtbasis,Lfdobj = 4, lambda = 1e-2)</code></pre>
+<p>Hasta aqui hemos creado la base que vamos a utlizar para desarrollar las curvas. A partir de ahora realizamos validacion cruzada. Las siguientes lineas de codigos son para generar una matriz que almacene los errores por metodo y genero, esto es, para simplificar la presentacion de los resultados.</p>
+<pre class="r"><code># Matriz para almacenar los errores
+error = matrix(0,nrow = 3,ncol = 2)
+
+#Nombres filas y columnas
+colnames(error)  = c(&quot;Splines&quot;,&quot;lineal&quot;)
+row.names(error) = c(&quot;Hombres&quot;,&quot;mujeres&quot;,&quot;Total&quot;)</code></pre>
+<p>El metodo a utilizar es un leave one out cross validation, la idea es eliminar una observacion, predecirla con el metodo utilizado, y calcular el error de prediccion.</p>
+<p>Cada metodo se aplica a cada genero (hombre y mujer), en el suavizado por splines, primero se estiman los coeficientes de la base, segundo se realiza una prediccion, y se finaliza calculando el error. En el suavizado lineal se aplican los mismos pasos, pero sin necesidad de recurrir a las funciones de <em>fda</em></p>
+<pre class="r"><code>for (i in 2:(nage-1)){
+  # Splines Hombres
+  datosi= hgtm[-i,]
+  curva.suave = smooth.basis(age[-i],datosi,growfdPar)$fd       # suavizado
+  pred.suave  = eval.fd(age[i],curva.suave)                     # Prediccion
+  error[1,1] =  error[1,1] + sum(abs(pred.suave - hgtm[i,])^2 ) # error spline
+  
+  #incremento lineal Hombres
+  incrementos = (hgtm[i+1,] - hgtm[i-1,])*(age[i]-age[i-1])/(age[i+1]-age[i-1])
+  
+  pred.lineal = hgtm[i-1,] + incrementos                        # prediccion
+  error[1,2]  = error[1,2] + sum(abs(pred.lineal - hgtm[i,])^2 )# error lineal
+  
+  # Splines Mujeres
+  datosi = hgtf[-i,]
+  curva.suave = smooth.basis(age[-i],datosi,growfdPar)$fd       # suavizado
+  pred.suave  = eval.fd(age[i],curva.suave)                     # Prediccion
+  error[2,1]  = error[2,1] + sum(abs(pred.suave - hgtf[i,])^2 ) # error spline 
+  
+  #incremento lineal Mujeres
+  incrementos =(hgtf[i+1,]- hgtf[i-1,])*(age[i]-age[i-1])/(age[i+1]-age[i-1])
+  
+  pred.lineal = hgtf[i-1,]+ incrementos                         # prediccion
+  error[2,2]  = error[2,2] + sum(abs(pred.lineal - hgtf[i,])^2 )# error lineal
+}
+
+# Errores totales
+error[3,] = apply(error,2,sum)</code></pre>
+<p>El error obtenido para cada metodo es:</p>
+<pre class="r"><code>error</code></pre>
+<pre><code>##          Splines   lineal
+## Hombres 292.0091 258.6784
+## mujeres 405.0673 368.8425
+## Total   697.0764 627.5210</code></pre>
+<p>Por lo tanto, el suavizado lineal ofrece un mejor ajuste a la curva de alturas.</p>
+</div>
+</div>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+<script src="/js/math-code.js"></script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+    
+  </body>
+</html>
+

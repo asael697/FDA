@@ -1,0 +1,96 @@
+---
+title: 'Clase 04: Movimiento Browniano'
+author: "Juan Antonio Cuesta-Albetos"
+date: 2020-04-26
+tags: ["movimiento de Brown", "proceso gaussianos"]
+---
+
+
+
+<p>Esta practica tiene dos partes. En la primera (este fidhero) creamos los datos, en la segunda, se hace el programa para suavizar la curva utilizando el nucleo gaussiano.</p>
+<div id="parte-1-ruido-blanco-amortiguado" class="section level2">
+<h2>Parte 1: Ruido Blanco amortiguado</h2>
+<p>Empezamos por determinar la curva que vamos a utilizar Va a estar definida en el intervalo [0,1] N es el numero de puntos en los que la tenemos definida:</p>
+<pre class="r"><code>N=101
+t=seq(0,1,length.out = N)</code></pre>
+<p>Va a ser una curva de la forma:
+<span class="math display">\[X(t)= t^d(asin(2k\pi t)+(1-a)cos(2k\pi t)).\]</span>
+Definimos los siguientes parametros:</p>
+<pre class="r"><code>k=1;a=1;b=1;d=1
+
+# Reparametrizamos
+a=a/(a+b)
+b=1-a
+# generamos los datos
+X=(a*sin(2*k*pi*t)+b*cos(2*k*pi*t))*(t^d)
+
+plot(t,X,col=&quot;grey&quot;,type=&quot;l&quot;,xlab=&quot;&quot;,ylab=&quot;&quot;)
+ abline(h=0,col=&quot;grey&quot;,lty=2)</code></pre>
+<p><img src="/post/2020-04-26-04-Movimiento-Browniano_files/figure-html/unnamed-chunk-2-1.png" width="672" />
+Ahora cogemos una muestra de puntos en los que vamos a observar la curva con cierto error. Podemos coger la muestra en puntos elegidos al azar o de modo sistematico. En todo caso, n es el tamano muestral</p>
+<pre class="r"><code>n=20
+muestra=sort(sample(x=1:N,size=n,replace=FALSE))
+muestra_t=t[muestra]</code></pre>
+<p>Las observaciones van a estar afectados de cierto error. Estos, a su vez, van a ser i.i.d. <span class="math inline">\(N(0,\sigma^2)\)</span></p>
+<pre class="r"><code>muestra_X=X[muestra]+rnorm(n,mean = 0,sd =.03)
+
+plot(muestra_t,muestra_X,pch=8,cex=.5,col=&quot;green&quot;,type = &quot;l&quot;)
+     points(muestra_t,muestra_X,pch=8,cex=.5)
+     points(muestra_t,0*muestra_X,pch=4,cex=.5)</code></pre>
+<p><img src="/post/2020-04-26-04-Movimiento-Browniano_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+</div>
+<div id="parte-2-movimiento-browniano-escalado" class="section level2">
+<h2>Parte 2: Movimiento Browniano escalado</h2>
+<p>Se simulan n trayectorias de dos Brownianos:</p>
+<ul>
+<li><p>Uno es estandard.</p></li>
+<li><p>El otro es s veces un estandard.</p></li>
+<li><p>n es el numero de browniandos de cada tipo.</p></li>
+</ul>
+<p>Se usa el hecho de que los incrementos del Browniano son normales independientes, con varianza igual al incremento.</p>
+<pre class="r"><code>n=3
+s=2
+N=1000
+I=seq(0,1,length.out = N+1)</code></pre>
+<p>Ahora calculamos el incremento, cuya raiz cuadrada es la desviacion tipica de los datos</p>
+<pre class="r"><code>delta=I[2]-I[1]
+Xs = delta^.5*cbind(rep(0,n),matrix(rnorm(N*n),nrow=n))
+Ys = delta^.5*cbind(rep(0,n),matrix(s*rnorm(N*n),nrow=n))
+color = 0
+#Acumulados
+B=Xs;Bs=Ys
+for ( i in 1:n){
+  B[i,] =  cumsum(Xs[i,])
+  Bs[i,] = cumsum(Ys[i,])
+}
+
+plot(x = c(0,1),y = c(min(c(B,Bs)),max(c(B,Bs))),col= 0,xlab=&quot;&quot;,ylab=&quot;&quot;,
+     main=paste0(&quot;Trayectorias de Brownianos. Unos estandard. Otros= &quot;, s,&quot;B&quot;))
+abline(h=0,col=&quot;grey&quot;)
+for (i in 1:n){
+  color=color+1
+  lines(I,B[i,],col=color)
+  color=color+1
+  lines(I,Bs[i,],col=color)
+}</code></pre>
+<p><img src="/post/2020-04-26-04-Movimiento-Browniano_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>De acuerdo con la teoria, deberia ser SENCILLISIMO identificar los tres de cada clase</p>
+<pre class="r"><code>plot(x = c(0,1),y = c(min(c(B,Bs)),max(c(B,Bs))),col= 0,xlab=&quot;&quot;,ylab=&quot;&quot;,
+     main=paste0(&quot;Trayectorias de Brownianos. Unos estandard. Otros= &quot;, s,&quot;B&quot;))
+abline(h=0,col=&quot;grey&quot;)
+for (i in 1:n){
+  lines(I,B[i,],col=&quot;red&quot;)
+  lines(I,Bs[i,],col=&quot;blue&quot;)
+}
+legend(&quot;bottomleft&quot;, legend = c(paste0(&quot;s=&quot;,1),paste0(&quot;s=&quot;,s)), col = c(&quot;red&quot;,&quot;blue&quot;), 
+       cex = 1, lwd = c(1,1),text.col = c(&quot;red&quot;,&quot;blue&quot;))</code></pre>
+<p><img src="/post/2020-04-26-04-Movimiento-Browniano_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>Sin embargo, es muy facil distinguirlos si usamos la suma de los cuadrados de sus incrementos</p>
+<pre class="r"><code>suma.cuadrados=rep(0,2*n)
+for (i in 1:n){
+  suma.cuadrados[i]=sum(Xs[i,]^2)
+  suma.cuadrados[2*n-i+1]=sum(Ys[i,]^2)
+}
+round(suma.cuadrados,3)</code></pre>
+<pre><code>## [1] 1.056 0.972 0.961 4.069 4.404 3.946</code></pre>
+</div>

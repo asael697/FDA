@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>regresion on Analisis de datos funcionales</title>
+    <link>/tags/regresion/</link>
+    <description>Recent content in regresion on Analisis de datos funcionales</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>es</language>
+    <lastBuildDate>Fri, 24 Apr 2020 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/regresion/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Clase 2: Analizando los datos de Crecimiento</title>
+      <link>/2020/04/24/clase-2-analizando-los-datos-de-crecimiento/</link>
+      <pubDate>Fri, 24 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/04/24/clase-2-analizando-los-datos-de-crecimiento/</guid>
+      <description>Hacemos una estimacion de las curvas de crecimiento usando B-splines e interpolacion lineal y comparamos, usando validacion cruzada para determinar el procedimiento con mejores resultados.
+Los datos a utilizar es growth, es una lista de pesos de 39 ninios y 54 ninias de edades entre 1 a 18 anios, para el estudio de crecimiento Berkeley. Los datos estan disponible en el paquete fda, para acceder a su documentacion basta usar:</description>
+    </item>
+    
+  </channel>
+</rss>

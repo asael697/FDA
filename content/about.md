@@ -1,8 +1,8 @@
 ---
 date: "2020-04-24"
-title: Descripcion de la clase
-type: section
+title: About
 ---
+
 
 Este repositorio sirve como guia para la clase de Analisis de datos funcionales, impartido en el Master de Matematica y computacion de la Universidad de Cantabria. En él se encuentran todo el codigo que utilizaremos en la clase. Este esta basado en el articulo de [Antonio Cuevas](https://www.sciencedirect.com/science/article/abs/pii/S0378375813000748), y usando los paquetes [fda](https://cran.r-project.org/web/packages/fda/index.html) y [fda.usc](https://www.jstatsoft.org/article/view/v051i04).
 

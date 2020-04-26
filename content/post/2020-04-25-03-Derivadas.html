@@ -1,0 +1,114 @@
+---
+title: "Clase 03: Derivadas de datos"
+author: "Juan Antonio Cuesta-Albetos"
+date: 2020-04-25
+tags: ["derivadas", "splines", "plots"]
+---
+
+
+
+<p>Se presenta la aproximacion de derivadas en curvas, usando interpoladores lineales y splines.</p>
+<p>Los datos a utilizar es <strong>tecator</strong>, que contiene muestras de grasa, agua y proteina en carnes. Los datos estan disponible en el paquete <strong>fda.usc</strong>, para acceder a su documentacion basta usar:</p>
+<pre class="r"><code># se cargan los datos
+data(&quot;tecator&quot;)
+
+#Llamado del help
+?tecator</code></pre>
+<div id="calculo-de-las-derivadas-de-los-datos-del-tecator" class="section level1">
+<h1>Calculo de las derivadas de los datos del Tecator</h1>
+<p>Primero separamos el contenido de grasa y el resto de la variables, de tecator, para simplificacion de codigo.</p>
+<pre class="r"><code>fat   = tecator$y$Fat
+datos = tecator$absorp.fdata
+ondas=datos$argvals</code></pre>
+<p>Por defecto la libreria <em>fda.usc</em> usa por defecto approximaciones lineales en metodos graficos y resumenes, en este trabajo se usaran splines de orden 9 y de orden 41.</p>
+<pre class="r"><code># Aproximaciones por Splines
+x0_9  = fdata.deriv(datos,nderiv=0,nbasis=9)  # orden 9
+x0_41 = fdata.deriv(datos,nderiv=0,nbasis=41) # orden 41
+
+#graficos de las curvas 
+par(mfrow = c(1,3))
+ plot(x0_41,col=&quot;blue&quot;,type=&quot;l&quot;,ylab =&quot;absorcion&quot;,lty=1,main=&quot;Aproxim. orden 41&quot;)
+ plot(x0_9 ,col=&quot;red&quot; ,type=&quot;l&quot;,ylab =&quot;absorcion&quot;,lty=1,main=&quot;Aproxim. orden 9&quot;)
+ plot(datos,col=&quot;black&quot; ,type=&quot;l&quot;,ylab =&quot;absorcion&quot;,lty=1,main=&quot;Aproxim. lineal&quot;)</code></pre>
+<p><img src="/post/2020-04-25-03-Derivadas_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code>par(mfrow = c(1,1))</code></pre>
+<p>Hacemos lo mismo para el calculo de las segundas derivadas</p>
+<pre class="r"><code># Aproximaciones por Splines
+x2_9  = fdata.deriv(datos,nderiv=2,nbasis=9)  # orden 9
+x2_41 = fdata.deriv(datos,nderiv=2,nbasis=41) # orden 41
+
+#graficos de las segundas derivadas
+layout(matrix(c(1,2,3,3), 2, 2, byrow = TRUE))
+ plot(x2_9, col=&quot;blue&quot;,type=&quot;l&quot;,ylab =&quot;2da derivada&quot;,lty=1,main=&quot;Aproxim. orden 9&quot;)
+ plot(x2_41,col=&quot;red&quot; ,type=&quot;l&quot;,ylab =&quot;2da derivada&quot;,lty=1,main=&quot;Aproxim. orden 41&quot;)
+ plot(x2_41,col=&quot;blue&quot;,type=&quot;l&quot;,lty=1,main=&quot;Aproximaciones segunda derivada&quot;)
+  lines(x2_9,col=&quot;red&quot;,type=&quot;l&quot;,lty=1)</code></pre>
+<p><img src="/post/2020-04-25-03-Derivadas_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>Hacemos cortes en los contenidos de grasa de 25 y 15 unidades y preparamos las curvas, las bajas en grasa seran verdes, las altas seren rojas y amarillas las intermedias. La siguiente funcion nos permite graficar las curvas separadas por su contenido en grasas, note que, por defecto se hacen los cortes en 25 y 15.</p>
+<pre class="r"><code># Grafico de curvas separadas por su contenido de grasa
+
+# parametro x: las curvas utilizadas
+# parametro corte: los cortes en los contenidos de grasa
+# parametro title: el titulo de nuestro grafico
+# parametro curvas: un vector con indices para resaltar curvas
+#
+plot_curvas =function(x,corte = c(25,15),title,curvas = NULL){
+  y = ifelse(fat &lt; corte[1],&quot;yellow&quot;,&quot;red&quot;) 
+  y[fat &lt; corte[2] ] = rep(length(y[fat &lt; corte[2]]),x = &quot;green&quot;)
+  y = factor(y)
+  
+  plot(x, col = as.character(y),type =&quot;l&quot;,lty = 1,main = title)
+  legend(&quot;topleft&quot;,col = levels(y),lwd = 1,cex = 0.75,
+         legend = c(paste(&quot;fat &gt;&quot;,corte[1],&quot;%&quot;),
+                    paste(&quot;fat&quot;,&quot;intermediate &quot;),
+                    paste(&quot;fat &lt;&quot;,corte[2],&quot;%&quot;)),
+  )
+  if(!is.null(curvas))
+    for (i in 1:length(curvas)){
+      lines(x$argvals,x$data[curvas[i],],lwd=3)
+    }
+}</code></pre>
+<p>Las curvas originales se puede observar en el grafico siguiente, parte superior izquierda, y sugiere que las curvas se segmentan naturalmente por su contenido de grasa, se desea conocer el contendio de grasa estimado de las curvas 99, 76 y 205. En la parte superior izquierda, se muestran las 3 curvas usando interpolacion lineal. En los graficos inferiores se muestran las 3 mismas curvas con las aproximaciones por splines.</p>
+<pre class="r"><code>elijo.curvas = c(99,76,205)
+
+layout(matrix(c(1,2,3,4), 2, 2, byrow = TRUE))
+ plot_curvas(datos,title = &quot;Spectometric curves \n Linear interpolation&quot;)
+ plot_curvas(x = datos,curvas = elijo.curvas,
+            title = &quot;Spectometric curves. \n Linear interpolation&quot;)
+  plot_curvas(x = x0_9,curvas = elijo.curvas,
+            title = &quot;Spectometric curves.\n Aproxim. orden 09&quot;)
+ plot_curvas(x = x0_41,curvas = elijo.curvas,
+            title = &quot;Spectometric curves.\n Aproxim. orden 41&quot;)</code></pre>
+<p><img src="/post/2020-04-25-03-Derivadas_files/figure-html/unnamed-chunk-6-1.png" width="960" /></p>
+<p>Anque la figura anterior sugiere que las curvas inferiores tienen concentracion mayor al 25% (<em>color verde</em>), en el siguiente grafico se muestra que la curva negra intermedia tiene 9.6% de concentracion (<em>es amarilla</em>) y la curva inferior tiene una concentracion de 18.1% (<em>roja</em>).</p>
+<pre class="r"><code>plot_curvas(x = datos,curvas = elijo.curvas,
+            title = &quot;Spectometric curves. \n Linear interpolation&quot;)
+text(datos$argvals[90],datos$data[elijo.curvas[1],90]+.15,paste(&quot;fat=&quot;,fat[elijo.curvas[1]]),cex=1,col=&quot;blue&quot;)
+text(datos$argvals[90],datos$data[elijo.curvas[2],90]+.1,paste(&quot;fat=&quot;,fat[elijo.curvas[2]]),cex=1,col=&quot;blue&quot;)
+text(datos$argvals[80],datos$data[elijo.curvas[3],80]-.1,paste(&quot;fat=&quot;,fat[elijo.curvas[3]]),cex=1,col=&quot;blue&quot;)</code></pre>
+<p><img src="/post/2020-04-25-03-Derivadas_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>En la zona donde se clasifican por las segundas derivadas, las curvas iniciales son casi planas</p>
+<pre class="r"><code>plot_curvas(x = datos[,ondas&lt;940 &amp; ondas&gt;920],
+            title = &quot;Spectometric curves&quot;)</code></pre>
+<p><img src="/post/2020-04-25-03-Derivadas_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>Hacemos lo mismo con tres curvas elegidas al azar</p>
+<pre class="r"><code># Muestra de 3 curvas
+I = sample(1:215,3)
+
+plot(datos[I],type = &quot;l&quot;,col = &quot;black&quot;,lty = 1,lwd = 4)
+ lines(x0_9[I], col =   &quot;red&quot;,lty = 1)
+ lines(x0_41[I],col = &quot;green&quot;,lty = 1)
+  legend(&quot;topleft&quot;,col = c(1,2,3),lwd = 3,cex = 1,
+         legend = c(&quot;Interpolacion lineal&quot;,&quot;Aproximacion orden 9&quot;,&quot;Aproximacion orden 41&quot;))</code></pre>
+<p><img src="/post/2020-04-25-03-Derivadas_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>Dibujamos juntas las segundas derivadas de las curvas.</p>
+<pre class="r"><code>par(mfrow=c(2,2))
+ plot_curvas(x = x2_9,title =&quot;2da derivada.\n Aproxim. orden 9&quot;)
+ plot_curvas(x = x2_9,curvas = elijo.curvas,
+             title =&quot;2da derivada. \n Aproxim. orden 9&quot;)
+ plot_curvas(x = x2_41,title =&quot;2da derivada.\n Aproxim. orden 9&quot;)
+ plot_curvas(x = x2_41,curvas = elijo.curvas,
+             title =&quot;2da derivada. \n Aproxim. orden 9&quot;)</code></pre>
+<p><img src="/post/2020-04-25-03-Derivadas_files/figure-html/unnamed-chunk-10-1.png" width="960" /></p>
+<pre class="r"><code>par(mfrow=c(1,1))</code></pre>
+</div>

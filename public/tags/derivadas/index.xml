@@ -5,19 +5,21 @@
     <link>/tags/derivadas/</link>
     <description>Recent content in derivadas on Analisis de datos funcionales</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Wed, 22 Apr 2020 00:00:00 +0000</lastBuildDate>
+    <language>es</language>
+    <lastBuildDate>Sat, 25 Apr 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/derivadas/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Clase 03: Derivadas de datos</title>
-      <link>/post/2020-04-22-clase-03/</link>
-      <pubDate>Wed, 22 Apr 2020 00:00:00 +0000</pubDate>
+      <link>/2020/04/25/clase-03-derivadas-de-datos/</link>
+      <pubDate>Sat, 25 Apr 2020 00:00:00 +0000</pubDate>
       
-      <guid>/post/2020-04-22-clase-03/</guid>
-      <description>Se presenta la aproximacion de derivadas en curvas, usando interpoladores lineales y splines.</description>
+      <guid>/2020/04/25/clase-03-derivadas-de-datos/</guid>
+      <description>Se presenta la aproximacion de derivadas en curvas, usando interpoladores lineales y splines.
+Los datos a utilizar es tecator, que contiene muestras de grasa, agua y proteina en carnes. Los datos estan disponible en el paquete fda.usc, para acceder a su documentacion basta usar:
+# se cargan los datosdata(&amp;quot;tecator&amp;quot;)#Llamado del help?tecatorCalculo de las derivadas de los datos del TecatorPrimero separamos el contenido de grasa y el resto de la variables, de tecator, para simplificacion de codigo.</description>
     </item>
     
   </channel>

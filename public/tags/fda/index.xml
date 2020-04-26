@@ -5,19 +5,20 @@
     <link>/tags/fda/</link>
     <description>Recent content in fda on Analisis de datos funcionales</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Fri, 24 Apr 2020 00:00:00 +0000</lastBuildDate>
+    <language>es</language>
+    <lastBuildDate>Thu, 23 Apr 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/fda/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Clase 01: Introduccion al Analisis de Datos Funcionales</title>
-      <link>/post/2020-04-24-clase-01/</link>
-      <pubDate>Fri, 24 Apr 2020 00:00:00 +0000</pubDate>
+      <link>/2020/04/23/clase-01-introduccion-al-analisis-de-datos-funcionales/</link>
+      <pubDate>Thu, 23 Apr 2020 00:00:00 +0000</pubDate>
       
-      <guid>/post/2020-04-24-clase-01/</guid>
-      <description>En este cuaderno damos una breve introduccion al analisis de datos funcionales en R usando 2 librerias fda de Ramsey y Wickham y su adaptacionfda.</description>
+      <guid>/2020/04/23/clase-01-introduccion-al-analisis-de-datos-funcionales/</guid>
+      <description>En este cuaderno damos una breve introduccion al analisis de datos funcionales en R usando 2 librerias fda de Ramsey y Wickham y su adaptacionfda.usc de Bande, de la Fuente, Galeano, Nieto-Reyes, y Garcia-Portugues. Dichos paquetes contienen rutinas para el analisis exploratorio de datos funcionales como profundidades, deteccion de curvas atipicas, modelos de regresion, clasificacion supervisada y analisis funcional de varianzas.
+Para instalar el paquete y sus dependencias basta con correr el siguiente codigo:</description>
     </item>
     
   </channel>
