@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Analisis de datos funcionales</title>
+    <link>/</link>
+    <description>Recent content on Analisis de datos funcionales</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 24 Apr 2020 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Clase 01: Introduccion al Analisis de Datos Funcionales</title>
+      <link>/post/2020-04-24-clase-01/</link>
+      <pubDate>Fri, 24 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/2020-04-24-clase-01/</guid>
+      <description>En este cuaderno damos una breve introduccion al analisis de datos funcionales en R usando 2 librerias fda de Ramsey y Wickham y su adaptacionfda.</description>
+    </item>
+    
+    <item>
+      <title>Descripcion de la clase</title>
+      <link>/about/</link>
+      <pubDate>Fri, 24 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/about/</guid>
+      <description>Este repositorio sirve como guia para la clase de Analisis de datos funcionales, impartido en el Master de Matematica y computacion de la Universidad de Cantabria.</description>
+    </item>
+    
+    <item>
+      <title>Clase 02: Analizando los datos de Crecimiento</title>
+      <link>/post/2020-04-23-clase-02/</link>
+      <pubDate>Thu, 23 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/2020-04-23-clase-02/</guid>
+      <description>Hacemos una estimacion de las curvas de crecimiento usando B-splines e interpolacion lineal y comparamos, usando validacion cruzada para determinar el procedimiento con mejores resultados.</description>
+    </item>
+    
+    <item>
+      <title>Clase 03: Derivadas de datos</title>
+      <link>/post/2020-04-22-clase-03/</link>
+      <pubDate>Wed, 22 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/2020-04-22-clase-03/</guid>
+      <description>Se presenta la aproximacion de derivadas en curvas, usando interpoladores lineales y splines.</description>
+    </item>
+    
+    <item>
+      <title>Clase 04: Movimiento Browniano</title>
+      <link>/post/2020-04-21-clase-04/</link>
+      <pubDate>Tue, 21 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/2020-04-21-clase-04/</guid>
+      <description>Esta practica tiene dos partes. En la primera (este fidhero) creamos los datos, en la segunda, se hace el programa para suavizar la curva utilizando el nucleo gaussiano.</description>
+    </item>
+    
+    <item>
+      <title>Markdown Syntax</title>
+      <link>/posts/markdown-syntax/</link>
+      <pubDate>Fri, 24 Jan 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/markdown-syntax/</guid>
+      <description>&lt;p&gt;This article offers a sample of basic Markdown syntax that can be used in Hugo content files, also it shows whether basic HTML elements are decorated with CSS in a Hugo theme.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Rich Content</title>
+      <link>/posts/rich-content/</link>
+      <pubDate>Thu, 02 Jan 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/rich-content/</guid>
+      <description>&lt;p&gt;Hugo ships with several &lt;a href=&#34;https://gohugo.io/content-management/shortcodes/#use-hugo-s-built-in-shortcodes&#34;&gt;Built-in Shortcodes&lt;/a&gt; for rich content, along with a &lt;a href=&#34;https://gohugo.io/about/hugo-and-gdpr/&#34;&gt;Privacy Config&lt;/a&gt; and a set of Simple Shortcodes that enable static and no-JS versions of various social media embeds.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Placeholder Text</title>
+      <link>/posts/placeholder-text/</link>
+      <pubDate>Tue, 17 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/placeholder-text/</guid>
+      <description>&lt;p&gt;Lorem est tota propiore conpellat pectoribus de pectora summo.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Math Typesetting</title>
+      <link>/posts/math-typesetting/</link>
+      <pubDate>Thu, 12 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/math-typesetting/</guid>
+      <description>Mathematical notation in a Hugo project can be enabled by using third party JavaScript libraries.</description>
+    </item>
+    
+    <item>
+      <title>Emoji Support</title>
+      <link>/posts/emoji-support/</link>
+      <pubDate>Tue, 03 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/emoji-support/</guid>
+      <description>Emoji can be enabled in a Hugo project in a number of ways.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>/archives/</link>
+      <pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/archives/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

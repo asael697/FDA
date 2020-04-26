@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>splines on Analisis de datos funcionales</title>
+    <link>/tags/splines/</link>
+    <description>Recent content in splines on Analisis de datos funcionales</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 23 Apr 2020 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/splines/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Clase 02: Analizando los datos de Crecimiento</title>
+      <link>/post/2020-04-23-clase-02/</link>
+      <pubDate>Thu, 23 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/2020-04-23-clase-02/</guid>
+      <description>Hacemos una estimacion de las curvas de crecimiento usando B-splines e interpolacion lineal y comparamos, usando validacion cruzada para determinar el procedimiento con mejores resultados.</description>
+    </item>
+    
+    <item>
+      <title>Clase 03: Derivadas de datos</title>
+      <link>/post/2020-04-22-clase-03/</link>
+      <pubDate>Wed, 22 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/2020-04-22-clase-03/</guid>
+      <description>Se presenta la aproximacion de derivadas en curvas, usando interpoladores lineales y splines.</description>
+    </item>
+    
+  </channel>
+</rss>
