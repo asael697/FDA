@@ -14,5 +14,5 @@ Los recursos utilizados para esta clase se pueden encontrar en los siguientes en
 * https://arxiv.org/pdf/1507.05135.pdf
 
 
-Para mayor informacion pueden contactarnos mediant el siguiente repositio [github](https://github.com/asael697) o contactarnos en nuestros sitios web [Cuestas-Albertos](https://personales.unican.es/cuestaj/) y [Asael Alonzo](https://statsla.netlify.app/)
+Para mayor informacion pueden contactarnos mediante el siguiente repositorio [github](https://github.com/asael697) o contactarnos en nuestros sitios web [Cuestas-Albertos](https://personales.unican.es/cuestaj/) y [Asael Alonzo](https://statsla.netlify.app/)
 
