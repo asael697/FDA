@@ -23,11 +23,11 @@ Los datos a utilizar es tecator, que contiene muestras de grasa, agua y proteina
     </item>
     
     <item>
-      <title>Clase 2: Analizando los datos de Crecimiento</title>
-      <link>/2020/04/24/clase-2-analizando-los-datos-de-crecimiento/</link>
+      <title>Clase 02: Analizando los datos de Crecimiento</title>
+      <link>/2020/04/24/clase-02-analizando-los-datos-de-crecimiento/</link>
       <pubDate>Fri, 24 Apr 2020 00:00:00 +0000</pubDate>
       
-      <guid>/2020/04/24/clase-2-analizando-los-datos-de-crecimiento/</guid>
+      <guid>/2020/04/24/clase-02-analizando-los-datos-de-crecimiento/</guid>
       <description>Hacemos una estimacion de las curvas de crecimiento usando B-splines e interpolacion lineal y comparamos, usando validacion cruzada para determinar el procedimiento con mejores resultados.
 Los datos a utilizar es growth, es una lista de pesos de 39 ninios y 54 ninias de edades entre 1 a 18 anios, para el estudio de crecimiento Berkeley. Los datos estan disponible en el paquete fda, para acceder a su documentacion basta usar:</description>
     </item>

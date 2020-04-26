@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(fda.usc)
 ```
 
-Esta practica tiene dos partes. En la primera (este fidhero) creamos los datos, en la segunda, se hace el programa para suavizar la curva utilizando el nucleo gaussiano.
+Esta practica tiene dos partes. En la primera creamos los datos, en la segunda, se hace el programa para suavizar la curva utilizando el nucleo gaussiano.
 
 ## Parte 1: Ruido Blanco amortiguado
 

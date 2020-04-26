@@ -17,7 +17,7 @@
       <pubDate>Sun, 26 Apr 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/04/26/clase-04-movimiento-browniano/</guid>
-      <description>Esta practica tiene dos partes. En la primera (este fidhero) creamos los datos, en la segunda, se hace el programa para suavizar la curva utilizando el nucleo gaussiano.
+      <description>Esta practica tiene dos partes. En la primera creamos los datos, en la segunda, se hace el programa para suavizar la curva utilizando el nucleo gaussiano.
 Parte 1: Ruido Blanco amortiguadoEmpezamos por determinar la curva que vamos a utilizar Va a estar definida en el intervalo [0,1] N es el numero de puntos en los que la tenemos definida:
 N=101t=seq(0,1,length.out = N)Va a ser una curva de la forma:\[X(t)= t^d(asin(2k\pi t)+(1-a)cos(2k\pi t)).</description>
     </item>
@@ -45,11 +45,11 @@ Los recursos utilizados para esta clase se pueden encontrar en los siguientes en
     </item>
     
     <item>
-      <title>Clase 2: Analizando los datos de Crecimiento</title>
-      <link>/2020/04/24/clase-2-analizando-los-datos-de-crecimiento/</link>
+      <title>Clase 02: Analizando los datos de Crecimiento</title>
+      <link>/2020/04/24/clase-02-analizando-los-datos-de-crecimiento/</link>
       <pubDate>Fri, 24 Apr 2020 00:00:00 +0000</pubDate>
       
-      <guid>/2020/04/24/clase-2-analizando-los-datos-de-crecimiento/</guid>
+      <guid>/2020/04/24/clase-02-analizando-los-datos-de-crecimiento/</guid>
       <description>Hacemos una estimacion de las curvas de crecimiento usando B-splines e interpolacion lineal y comparamos, usando validacion cruzada para determinar el procedimiento con mejores resultados.
 Los datos a utilizar es growth, es una lista de pesos de 39 ninios y 54 ninias de edades entre 1 a 18 anios, para el estudio de crecimiento Berkeley. Los datos estan disponible en el paquete fda, para acceder a su documentacion basta usar:</description>
     </item>

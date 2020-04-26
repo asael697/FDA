@@ -7,7 +7,7 @@ tags: ["movimiento de Brown", "proceso gaussianos"]
 
 
 
-<p>Esta practica tiene dos partes. En la primera (este fidhero) creamos los datos, en la segunda, se hace el programa para suavizar la curva utilizando el nucleo gaussiano.</p>
+<p>Esta practica tiene dos partes. En la primera creamos los datos, en la segunda, se hace el programa para suavizar la curva utilizando el nucleo gaussiano.</p>
 <div id="parte-1-ruido-blanco-amortiguado" class="section level2">
 <h2>Parte 1: Ruido Blanco amortiguado</h2>
 <p>Empezamos por determinar la curva que vamos a utilizar Va a estar definida en el intervalo [0,1] N es el numero de puntos en los que la tenemos definida:</p>
@@ -92,5 +92,5 @@ for (i in 1:n){
   suma.cuadrados[2*n-i+1]=sum(Ys[i,]^2)
 }
 round(suma.cuadrados,3)</code></pre>
-<pre><code>## [1] 1.056 0.972 0.961 4.069 4.404 3.946</code></pre>
+<pre><code>## [1] 0.982 0.965 1.034 3.846 3.974 4.091</code></pre>
 </div>

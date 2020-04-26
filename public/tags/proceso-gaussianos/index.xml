@@ -17,7 +17,7 @@
       <pubDate>Sun, 26 Apr 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/04/26/clase-04-movimiento-browniano/</guid>
-      <description>Esta practica tiene dos partes. En la primera (este fidhero) creamos los datos, en la segunda, se hace el programa para suavizar la curva utilizando el nucleo gaussiano.
+      <description>Esta practica tiene dos partes. En la primera creamos los datos, en la segunda, se hace el programa para suavizar la curva utilizando el nucleo gaussiano.
 Parte 1: Ruido Blanco amortiguadoEmpezamos por determinar la curva que vamos a utilizar Va a estar definida en el intervalo [0,1] N es el numero de puntos en los que la tenemos definida:
 N=101t=seq(0,1,length.out = N)Va a ser una curva de la forma:\[X(t)= t^d(asin(2k\pi t)+(1-a)cos(2k\pi t)).</description>
     </item>
