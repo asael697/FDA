@@ -1,20 +1,29 @@
 ---
 title: 'Clase 04: Movimiento Browniano'
-author: "Juan Antonio Cuesta-Albetos"
+author: "Juan Antonio Cuesta-Albertos"
 date: 2020-04-26
 tags: ["movimiento de Brown", "proceso gaussianos"]
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  dpi = 150,
+  fig.asp = 0.8,
+  fig.width = 10,
+  out.width = "70%",
+  fig.align = "center"
+)
+
 library(fda.usc)
 ```
 
-Esta practica tiene dos partes. En la primera creamos los datos, en la segunda, se hace el programa para suavizar la curva utilizando el nucleo gaussiano.
+Esta practica tiene dos partes. En la primera creamos los datos, en la segunda, se hace el programa para suavizar la curva utilizando el núcleo gaussiano.
 
 ## Parte 1: Ruido Blanco amortiguado
 
-Empezamos por determinar la curva que vamos a utilizar Va a estar definida en el intervalo [0,1] N es el numero de puntos en los que la tenemos definida:
+La curva a utilizar, esta definida en el intervalo [0,1] N es el numero de puntos en los que la tenemos definida:
 
 ```{r}
 N=101
@@ -23,11 +32,13 @@ t=seq(0,1,length.out = N)
 
 Va a ser una curva de la forma:
 $$X(t)= t^d(asin(2k\pi t)+(1-a)cos(2k\pi t)).$$
-Definimos los siguientes parametros:
+
+Definimos los siguientes parámetros:
+
 ```{r}
 k=1;a=1;b=1;d=1
 
-# Reparametrizamos
+# Re parametrizamos
 a=a/(a+b)
 b=1-a
 # generamos los datos
@@ -37,15 +48,17 @@ plot(t,X,col="grey",type="l",xlab="",ylab="")
  abline(h=0,col="grey",lty=2)
 
 ```
-Ahora cogemos una muestra de puntos en los que vamos a observar la curva con cierto error. Podemos coger la muestra en puntos elegidos al azar o de modo sistematico. En todo caso, n es el tamano muestral
+
+Ahora cogemos una muestra de puntos en los que vamos a observar la curva con cierto error. Podemos coger la muestra en puntos elegidos al azar o de modo sistemático. En todo caso, n es el tamaño muestral.
+
 ```{r}
 n=20
 muestra=sort(sample(x=1:N,size=n,replace=FALSE))
 muestra_t=t[muestra]
 ```
 
-
 Las observaciones van a estar afectados de cierto error. Estos, a su vez, van a ser i.i.d. $N(0,\sigma^2)$
+
 ```{r}
 muestra_X=X[muestra]+rnorm(n,mean = 0,sd =.03)
 
@@ -58,9 +71,9 @@ plot(muestra_t,muestra_X,pch=8,cex=.5,col="green",type = "l")
 
 Se simulan n trayectorias de dos Brownianos:
    
-  + Uno es estandard.
+  + Uno es estándar.
   
-  + El otro es s veces un estandard.
+  + El otro es s veces un estándar.
   
   +  n es el numero de browniandos de cada tipo.
   
@@ -73,7 +86,8 @@ N=1000
 I=seq(0,1,length.out = N+1)
 ```
 
-Ahora calculamos el incremento, cuya raiz cuadrada es la desviacion tipica de los datos
+Ahora calculamos el incremento, cuya raíz cuadrada es la desviación típica de los datos
+
 ```{r}
 delta=I[2]-I[1]
 Xs = delta^.5*cbind(rep(0,n),matrix(rnorm(N*n),nrow=n))
@@ -98,8 +112,8 @@ for (i in 1:n){
 
 ```
 
+De acuerdo con la teoría, debería ser SENCILLISIMO identificar los tres de cada clase
 
-De acuerdo con la teoria, deberia ser SENCILLISIMO identificar los tres de cada clase
 ```{r}
 plot(x = c(0,1),y = c(min(c(B,Bs)),max(c(B,Bs))),col= 0,xlab="",ylab="",
      main=paste0("Trayectorias de Brownianos. Unos estandard. Otros= ", s,"B"))
@@ -112,8 +126,8 @@ legend("bottomleft", legend = c(paste0("s=",1),paste0("s=",s)), col = c("red","b
        cex = 1, lwd = c(1,1),text.col = c("red","blue"))
 ```
 
+Sin embargo, es muy fácil distinguirlos si usamos la suma de los cuadrados de sus incrementos
 
-Sin embargo, es muy facil distinguirlos si usamos la suma de los cuadrados de sus incrementos
 ```{r}
 suma.cuadrados=rep(0,2*n)
 for (i in 1:n){
@@ -123,6 +137,3 @@ for (i in 1:n){
 round(suma.cuadrados,3)
 
 ```
-
-
-

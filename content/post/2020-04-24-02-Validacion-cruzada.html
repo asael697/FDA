@@ -1,16 +1,16 @@
 ---
-title: "Clase 02: Analizando los datos de Crecimiento"
-author: "Juan Antonio Cuesta-Albetos"
+title: "Clase 02: Analizando los datos de crecimiento"
+author: "Juan Antonio Cuesta-Albertos"
 date: 2020-04-24
 tags: ["cross validation", "splines", "regresion"]
 ---
 
 
 
-<p>Hacemos una estimacion de las curvas de crecimiento usando B-splines e interpolacion lineal y comparamos, usando validacion cruzada para determinar el procedimiento con mejores resultados.</p>
-<p>Los datos a utilizar es <strong>growth</strong>, es una lista de pesos de 39 ninios y 54 ninias de edades entre 1 a 18 anios, para el estudio de crecimiento Berkeley. Los datos estan disponible en el paquete <strong>fda</strong>, para acceder a su documentacion basta usar:</p>
+<p>Hacemos una estimación de las curvas de crecimiento usando B-splines e interpolación lineal y comparamos, usando validación cruzada para determinar el procedimiento con mejores resultados.</p>
+<p>Los datos a utilizar es <strong>growth</strong>, es una lista de pesos de 39 niños y 54 niñas de edades entre 1 a 18 años, para el estudio de crecimiento Berkeley. Los datos están disponible en el paquete <strong>fda</strong>, para acceder a su documentación basta usar:</p>
 <pre class="r"><code>?growth</code></pre>
-<p>Se generan algunas variables adicionales que sera utiles en el analisis</p>
+<p>Se generan algunas variables adicionales que sera útiles en el análisis</p>
 <pre class="r"><code># longitud de las edades
 nage  =   length(growth$age)
 
@@ -25,11 +25,11 @@ agefine = seq(rng[1],rng[2],length=101)
 hgtm = growth$hgtm;hgtf = growth$hgtf</code></pre>
 <div id="se-suavizan-los-datos" class="section level1">
 <h1>1. Se suavizan los datos</h1>
-<p>Esta tecnica utiliza los metodos de suavizado habituales para suavizar los datos, pero no se garantiza que produzca un ajuste monotono. Esto puede no ser muy importante para la estimacion de la funcion de altura, pero puede tener consecuencias mucho mas graves para la velocidad y aceleraciones. Vea el metodo de suavizado monotono a continuacion para obtener una mejor solucion, pero con una sobrecarga del calculo.</p>
-<div id="creacion-del-objeto-fd" class="section level3">
-<h3>Creacion del objeto fd</h3>
-<p>Una base B-spline basis con nodos en valores de edad y orden 6, es utilizado. Llamando a la funcion <em>smooth.basisPar()</em> obtenemos un spline cubico. Sin embargo, para obtener una imagen
-suavizada de la aceleracion, se necesita un spline de grado 5 y orden 6.</p>
+<p>Esta técnica utiliza los métodos de suavizado para estimar las curvas, pero no se garantiza que produzca un ajuste monótono. Esto puede no ser muy importante para la estimación de la función de altura, pero puede tener consecuencias mucho mas graves para la velocidad y aceleraciones. Vea el método de suavizado monótono a continuación para obtener una mejor solución, pero con una sobrecarga del calculo.</p>
+<div id="creación-del-objeto-fd" class="section level3">
+<h3>Creación del objeto fd</h3>
+<p>Una base B-spline con nodos en valores de edad y orden 6, es utilizado. Llamando a la función <em>smooth.basisPar()</em> obtenemos un spline cubico. Sin embargo, para obtener una imagen
+suavizada de la aceleración, se necesita un spline de grado 5 y orden 6.</p>
 <pre class="r"><code># nodos 
 age = growth$age
 
@@ -44,17 +44,16 @@ hgtbasis = create.bspline.basis(range(age), nbasis, norder, age)</code></pre>
 </div>
 <div id="suavizando-los-objetos-penalizando-la-4ta-derivada" class="section level3">
 <h3>Suavizando los objetos, penalizando la 4ta derivada</h3>
-<p>Esto devuelve un estimador mas suave de la funcion de aceleracion</p>
+<p>Esto devuelve un estimador mas suave de la función de aceleración</p>
 <pre class="r"><code>growfdPar = fdPar(fdobj = hgtbasis,Lfdobj = 4, lambda = 1e-2)</code></pre>
-<p>Hasta aqui hemos creado la base que vamos a utlizar para desarrollar las curvas. A partir de ahora realizamos validacion cruzada. Las siguientes lineas de codigos son para generar una matriz que almacene los errores por metodo y genero, esto es, para simplificar la presentacion de los resultados.</p>
+<p>Hasta aquí hemos creado la base que vamos a utilizar para desarrollar las curvas. A partir de ahora realizamos validación cruzada. Las siguientes lineas de códigos son para generar una matriz que almacene los errores por método y genero, esto es, para simplificar la presentación de los resultados.</p>
 <pre class="r"><code># Matriz para almacenar los errores
 error = matrix(0,nrow = 3,ncol = 2)
 
 #Nombres filas y columnas
 colnames(error)  = c(&quot;Splines&quot;,&quot;lineal&quot;)
 row.names(error) = c(&quot;Hombres&quot;,&quot;mujeres&quot;,&quot;Total&quot;)</code></pre>
-<p>El metodo a utilizar es un leave one out cross validation, la idea es eliminar una observacion, predecirla con el metodo utilizado, y calcular el error de prediccion.</p>
-<p>Cada metodo se aplica a cada genero (hombre y mujer), en el suavizado por splines, primero se estiman los coeficientes de la base, segundo se realiza una prediccion, y se finaliza calculando el error. En el suavizado lineal se aplican los mismos pasos, pero sin necesidad de recurrir a las funciones de <em>fda</em></p>
+<p>El método a utilizar es un leave one out cross validation, la idea es eliminar una observación, predecirla con el método utilizado, y calcular el error de predicción. Cada método se aplica a cada genero (hombre y mujer), en el suavizado por splines, primero se estiman los coeficientes de la base, segundo se realiza una predicción, y se finaliza calculando el error. En el suavizado lineal se aplican los mismos pasos, pero sin necesidad de recurrir a las funciones de <em>fda</em>.</p>
 <pre class="r"><code>for (i in 2:(nage-1)){
   # Splines Hombres
   datosi= hgtm[-i,]
@@ -83,9 +82,9 @@ row.names(error) = c(&quot;Hombres&quot;,&quot;mujeres&quot;,&quot;Total&quot;)<
 
 # Errores totales
 error[3,] = apply(error,2,sum)</code></pre>
-<p>El error obtenido para cada metodo es:</p>
-<pre class="r"><code>error</code></pre>
-<pre><code>##          Splines   lineal
+<p>El error obtenido para cada método es:</p>
+<pre class="r"><code>error
+##          Splines   lineal
 ## Hombres 292.0091 258.6784
 ## mujeres 405.0673 368.8425
 ## Total   697.0764 627.5210</code></pre>

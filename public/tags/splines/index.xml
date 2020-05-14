@@ -17,19 +17,29 @@
       <pubDate>Sat, 25 Apr 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/04/25/clase-03-derivadas-de-datos/</guid>
-      <description>Se presenta la aproximacion de derivadas en curvas, usando interpoladores lineales y splines.
-Los datos a utilizar es tecator, que contiene muestras de grasa, agua y proteina en carnes. Los datos estan disponible en el paquete fda.usc, para acceder a su documentacion basta usar:
-# se cargan los datosdata(&amp;quot;tecator&amp;quot;)#Llamado del help?tecatorCalculo de las derivadas de los datos del TecatorPrimero separamos el contenido de grasa y el resto de la variables, de tecator, para simplificacion de codigo.</description>
+      <description>Se presenta la aproximación de derivadas en curvas, usando interpoladores lineales y splines.
+Los datos a utilizar es tecator, que contiene muestras de grasa, agua y proteína en carnes. Los datos están disponible en el paquete fda.usc, para acceder a su documentación basta usar:
+# se cargan los datosdata(&amp;quot;tecator&amp;quot;)#Llamado del help?tecatorCalculo de las derivadas de los datos del TecatorPrimero separamos el contenido de grasa y el resto de la variables, de tecator, para simplificación de código.</description>
     </item>
     
     <item>
-      <title>Clase 02: Analizando los datos de Crecimiento</title>
+      <title>Clase 02: Analizando los datos de crecimiento</title>
       <link>/2020/04/24/clase-02-analizando-los-datos-de-crecimiento/</link>
       <pubDate>Fri, 24 Apr 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/04/24/clase-02-analizando-los-datos-de-crecimiento/</guid>
-      <description>Hacemos una estimacion de las curvas de crecimiento usando B-splines e interpolacion lineal y comparamos, usando validacion cruzada para determinar el procedimiento con mejores resultados.
-Los datos a utilizar es growth, es una lista de pesos de 39 ninios y 54 ninias de edades entre 1 a 18 anios, para el estudio de crecimiento Berkeley. Los datos estan disponible en el paquete fda, para acceder a su documentacion basta usar:</description>
+      <description>Hacemos una estimación de las curvas de crecimiento usando B-splines e interpolación lineal y comparamos, usando validación cruzada para determinar el procedimiento con mejores resultados.
+Los datos a utilizar es growth, es una lista de pesos de 39 niños y 54 niñas de edades entre 1 a 18 años, para el estudio de crecimiento Berkeley. Los datos están disponible en el paquete fda, para acceder a su documentación basta usar:</description>
+    </item>
+    
+    <item>
+      <title>Clase 01: Introduccion al analisis de datos funcionales</title>
+      <link>/2020/04/23/clase-01-introduccion-al-analisis-de-datos-funcionales/</link>
+      <pubDate>Thu, 23 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/04/23/clase-01-introduccion-al-analisis-de-datos-funcionales/</guid>
+      <description>En este cuaderno damos una breve introducción al análisis de datos funcionales en R usando 2 librerías fda de Ramsey y Wickham y su adaptaciónfda.usc de Bande, de la Fuente, Galeano, Nieto-Reyes, y Garcia-Portugues. Dichos paquetes contienen rutinas para el análisis exploratorio de datos funcionales como profundidades, detección de curvas atípicas, modelos de regresión, clasificación supervisada y análisis funcional de varianzas.
+Para instalar el paquete y sus dependencias basta con correr el siguiente código:</description>
     </item>
     
   </channel>

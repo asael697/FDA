@@ -1,20 +1,29 @@
 ---
-title: 'Clase 01: Introduccion al Analisis de Datos Funcionales'
-author: "Juan Antonio Cuesta-Albetos"
+title: 'Clase 01: Introduccion al analisis de datos funcionales'
+author: "Juan Antonio Cuesta-Albertos"
 date: 2020-04-23
-tags: ["fda", "functional data", "plots"]
+tags: ["cross validation", "splines", "regresion"]
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  dpi = 150,
+  fig.asp = 0.8,
+  fig.width = 10,
+  out.width = "70%",
+  fig.align = "center"
+)
+
 library(fda.usc)
 ```
 
+En este cuaderno damos una breve introducción al análisis de datos funcionales en R usando 2 librerías [fda](https://cran.r-project.org/web/packages/fda/fda.pdf) de *Ramsey y Wickham* y su adaptación
+[fda.usc](https://cran.r-project.org/web/packages/fda.usc/fda.usc.pdf) de  *Bande, de la Fuente, Galeano, Nieto-Reyes, y Garcia-Portugues*. Dichos paquetes contienen rutinas para el análisis exploratorio de datos funcionales como profundidades, detección de curvas atípicas, modelos de regresión, clasificación supervisada y análisis funcional de varianzas.
 
-En este cuaderno damos una breve introduccion al analisis de datos funcionales en R usando 2 librerias [fda](https://cran.r-project.org/web/packages/fda/fda.pdf) de *Ramsey y Wickham* y su adaptacion
-[fda.usc](https://cran.r-project.org/web/packages/fda.usc/fda.usc.pdf) de  *Bande, de la Fuente, Galeano, Nieto-Reyes, y Garcia-Portugues*. Dichos paquetes contienen rutinas para el analisis exploratorio de datos funcionales como profundidades, deteccion de curvas atipicas, modelos de regresion, clasificacion supervisada y analisis funcional de varianzas.
-
-Para instalar el paquete y sus dependencias basta con correr el siguiente codigo:
+Para instalar el paquete y sus dependencias basta con correr el siguiente código:
+  
 ```{r install,eval=FALSE}
 # Instalando el paquete
 install.packages("fda.usc")
@@ -24,12 +33,11 @@ library(fda.usc)
 library(ggplot2)
 ```
 
-A continuacion analizaremos los datos de crecimiento de jovenes en Bekerley, entre los anios 1 u 18, almacenados en la lista **growth**, para mayor informacion digitar el comando *help(growth)*. Dado que los datos esta en formato lista, haremos una tranformacion de los datos para dejarlos en formato tabla, *data.frame* y tipo *tidy*.
+A continuación analizaremos los datos de crecimiento de jóvenes en Berkeley, entre los años 1 u 18, almacenados en la lista **growth**, para mayor información ejecutar el comando *help(growth)*. Dado que los datos esta en formato lista, haremos una transformación de los datos para dejarlos en formato tabla, *data.frame* y tipo *tidy*.
 
-
-Para graficar los datos usando los metodos estandar de R basta con correr el siguiente codigo
+Para graficar los datos usando métodos estándar de R basta con correr el siguiente código
 ```{r}
-# Unir la data de los ninios y ninias
+# Unir la data de los niños y niñas
 Datos=t(cbind(growth$hgtm,growth$hgtf))
 # Diferenciar las observaciones por su genero
 sexo=c(rep("boy",39),rep("girl",54))
@@ -48,11 +56,11 @@ plot(c(1,edad[31]),c(mm,Mm),
 for (i in Personas) lines(edad,Datos[i,],pch=3,cex=.5)
 ```
 
-
-Ahora bien, para realizar una segmentacion por el sexo hacemos:
+Ahora bien, para realizar una segmentación por el sexo hacemos:
+  
 ```{r}
-color=rep("pink",93)                    # definimos el color rosado a las ninias 
-color[sexo=="boy"]=rep("lightblue",39)  # definimos el color azul para los ninios
+color=rep("pink",93)                    # definimos el color rosado a las niñas 
+color[sexo=="boy"]=rep("lightblue",39)  # definimos el color azul para los niños
 
 plot(c(1,edad[31]),c(mm,Mm),
      col="white",
@@ -63,11 +71,9 @@ plot(c(1,edad[31]),c(mm,Mm),
 for (i in Personas) lines(edad,Datos[i,],pch=3,cex=.5,col=color[i])
 ```
 
+En el ultimo  gráfico se observa que la curva de crecimiento de los niños es ligeramente mayor en las edades entre los 15 y 18 años, aunque en los primeros años el crecimiento para ambos sexos es el mismo. 
 
-En el ultimo  grafico se observa que la curva de creciemiento de los ninios es ligeramente mayor en las edades entre los 15 y 18 anios, aunque en los primeros anios el creciment para ambos sexos es el mismo. 
-
-Ahora bien, recordemos que dicho grafico reconstruye las curvas de crecimiento usando los puntos muestreados en la evolucion del experimento, por lo que la data, sin realizar las interpolaciones lineales es poco informativo, y se muestra a continuacion:
-
+Ahora bien, recordemos que dicho gráfico reconstruye las curvas de crecimiento usando los puntos muestreados en la evolución del experimento, por lo que la data, sin realizar las interpolaciones lineales es poco informativo, y se muestra a continuación:
 
 ```{r}
 #Datos de crecimiento. Sin separar por sexos
@@ -83,7 +89,7 @@ for (i in Personas) points(edad,Datos[i,],pch=16,cex=.75)
 
 ## Tecator
 
-**tecator** es una data guia dentro de la librera  *fda.suc* que sirve como guie y ejemplo para mostrar la funcionalidad del paquete como tal, tecator contiene los registros de agua, grasa y proteina en muestras de carne. Son 215 muestras, donde las primeras 129 observaciones se usaron como conjunto de entreanmiento. 
+**tecator** es un conjunto de datos dentro de la librera  *fda.suc* que sirve como guía y ejemplo para mostrar la funcionalidad del paquete como tal, tecator contiene los registros de agua, grasa y proteína en muestras de carne. Son 215 muestras, donde las primeras 129 observaciones se usaron como conjunto de entrenamiento. 
 
 ```{r}
 # Tecator.
@@ -92,22 +98,24 @@ absorp=tecator$absorp.fdata    # Extraer el conjunto absorp de tecator
 class(absorp)                  # Revisar el tipo de objecto 
 ```
 
-La clase *fdata* es el tipo de objetos utilizados por la libreria para almacenar datos de tipo funcional, este tipo de objetos tienen los metodos de plot sobrecargados, por lo tanto, graficar data funcional almacenada del tipo *"fdata"* basta simplemente realizar el siguiente comando:
+La clase *fdata* es el tipo de objetos utilizados por la librería para almacenar datos de tipo funcional, este tipo de objetos tienen los métodos de visualización ya definidos, por lo tanto, graficar datos del tipo *"fdata"* basta simplemente realizar el siguiente comando:
 
 ```{r}
 plot(absorp,col = "black")
 ```
 
-# Datos de consumo de luz electrica
+# Datos de consumo de luz eléctrica
 
-El siguiente ejemplo son los registros de consumo de energia electrica en Santander, la data fue almacenada en el documento de texto *data.txt* que se adjunta con el documento, para cargarlo basta con que dicho archivo se encuentre en la misma carpeta donde se corre este cuaderno. Para cargarlo al sistema utilizaremos la funcion a continacion:
+El siguiente ejemplo son los registros de consumo de energía eléctrica en Santander, la data fue almacenada en el documento de texto *data.txt* que se adjunta con el documento, para cargarlo basta con que dicho archivo se encuentre en la misma carpeta donde se corre este cuaderno. Para cargarlo al sistema utilizaremos la siguiente función:
+
 ```{r}
 DatosLuz = read.csv("DatosLuz.txt",sep = " ")
 d=dim(DatosLuz)
 d
 ```
 
-La funcion *dim()* almacena las dimensiones de una matriz o data.frame, donde el primer  elemento son las filas, y el segundo las columnas, para el caso de los resgistros de luz, se poseen 103 datos, y a cada uno de ellos se realizaron 96 mediciones. Procedemos a estandarizar los datos para que estos den valores entre o y 1. 
+La función *dim()* almacena las dimensiones de una matriz o data.frame, donde el primer  elemento son las filas, y el segundo las columnas, para el caso de los registros de luz, poseen 103 datos, y a cada uno de ellos se realizaron 96 mediciones. Procedemos a estandarizar los datos para que estos den valores entre o y 1. 
+
 ```{r}
 # Copia de los datos
 DatosLuzN=DatosLuz
@@ -132,7 +140,7 @@ plot(c(1,96),c(0,1),
 for (i in 1:103) lines(Tiempo,DatosLuzN[i,],col=i)
 ```
 
-La data graficada es tanta, y cada uno de los registros de consumo tiene un comportamiento tan diferente del otro, que es muy dificil extraer patrones e informacion usando el grafico anterior, para eso, extraeremos un pequenio conjunto de ellos y los graficaremos una pequenia muestra de ellos
+Los datos graficados es tanta, y cada uno de los registros de consumo tiene un comportamiento tan diferente del otro, que es muy difícil extraer patrones e información usando el gráfico anterior, para eso, extraeremos un pequeño conjunto de ellos y los graficamos una pequeña muestra de ellos.
 
 ```{r}
 set.seed(1921)      # Semilla aleatoria para que siempre genere la misma muestra
@@ -159,4 +167,3 @@ plot(c(1,96),c(0,1),col="white",xlab=" Tiempo ", ylab="consumo estandarizado ", 
 par(mfrow=c(1,1)) # Regresar a una sola malla
 rm(list = ls())   # Limpiar el ordenador eliminando todas las  variables
 ```
-

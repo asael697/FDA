@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>profundidades on Analisis de datos funcionales</title>
+    <link>/tags/profundidades/</link>
+    <description>Recent content in profundidades on Analisis de datos funcionales</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>es</language>
+    <lastBuildDate>Mon, 27 Apr 2020 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/profundidades/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Clase 06: Clasificacon de datos funcionales</title>
+      <link>/2020/04/27/clase-06-clasificacon-de-datos-funcionales/</link>
+      <pubDate>Mon, 27 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/04/27/clase-06-clasificacon-de-datos-funcionales/</guid>
+      <description>Aquí hacemos clasificación de datos funcionales, utilizamos las librerías:
+fda.usc
+depth
+matrixcalc
+Empezamos por cargar los datos phoneme que contienen 500 ondas producidas al pronuncias los sonidos ingleses “sh”, “iy”, “dcl”, “aa”, “ao”, 100 de cada uno hay 250 casos (50 de cada) en la training sample y otros tantos en la test sample.
+library(fda.usc)library(depth)library(matrixcalc)data(phoneme)names(phoneme)## [1] &amp;quot;learn&amp;quot; &amp;quot;test&amp;quot; &amp;quot;classlearn&amp;quot; &amp;quot;classtest&amp;quot;sonidos = c(&amp;quot;sh&amp;quot;, &amp;quot;iy&amp;quot;, &amp;quot;dcl&amp;quot;, &amp;quot;aa&amp;quot;, &amp;quot;ao&amp;quot;)Empezamos por dibujar los datos.</description>
+    </item>
+    
+  </channel>
+</rss>

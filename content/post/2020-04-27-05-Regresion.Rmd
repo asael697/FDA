@@ -1,0 +1,363 @@
+---
+title: 'Clase 05: Regresion lineal'
+author: "Juan Antonio Cuesta-Albertos"
+date: 2020-04-27
+tags: ["regresion lineal", "base de Fourier","Componentes principales"]
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(warning = FALSE)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  dpi = 150,
+  fig.asp = 0.8,
+  fig.width = 10,
+  out.width = "70%",
+  fig.align = "center"
+)
+```
+
+Analisis de regresion lineal del contenido en grasa de los datos Tecator en funcion de su absorbance. Comenzamos por cargar la libreria fda.usc y seleccionar los datos a analizar.
+
+```{r,message = FALSE}
+library("fda.usc")
+
+data(tecator)
+
+absorp = tecator$absorp.fdata
+head(tecator$y)
+```
+
+Tenemos 215 datos (*curvas*) Pero construimos el modelo con solo los 165 primeros. Dejamos las 50 restantes para comprobaciones. Utilizamos una notacion mas comoda para las variables a utilizar (*que son la absorbance y sus dos primeras derivadas*). Metemos en 
+
+  + **y**: el porcentaje en grasa de cada muestra
+  
+  + **X**: las absorbances de cada muestra de carne
+
+```{r}
+# Primeros 165 datos
+ind = 1:165
+tt = absorp[["argvals"]]
+y  = tecator$y$Fat[ind]
+X  = absorp[ind, ]
+```
+
+Calculamos las derivadas de las absorvances en una base de bsplines de dimension 19.
+
+```{r}
+X.d1 = fdata.deriv(X, nbasis = 19, nderiv = 1)
+X.d2 = fdata.deriv(X, nbasis = 19, nderiv = 2)
+```
+
+Para ver si existe relacion entre el contenido de grasa y la absorvance y sus dos primeras derivadas, dibujamos las curvas de absorcion utilizando como colores los porcentajes de grasa.
+ 
+```{r}
+plot(X, col = y)
+```
+
+Puede que tengamos demasiados valores. Para reducirlos, vamos a dividir las muestras de carne en grupos, segun su contenido en grasa. El numero de grupos es uno mas el numero de valores que haya en cortes. Los valores de esta variable determinan los grupos, luego repetimois el grafico usandos un color para cada grupo.
+
+```{r}
+color=2
+colores=0*y + color
+cortes=c(10,20)
+
+for (ic in cortes) 
+  colores[y > ic] = colores[y > ic] + 1
+
+# Definimos el mallado para las 3 graficas
+layout(matrix(c(1,1,2,3), 2, 2, byrow = TRUE))
+
+plot(X,   col = colores)
+plot(X.d1,col = colores)
+plot(X.d2,col = colores)
+```
+
+## Regresion lineal
+
+Estimamos la curva que determina la regresion lineal utilizando una base de Fourier de dimension 5
+
+```{r}
+rangett = absorp$rangeval
+basis1 = create.fourier.basis(rangeval = rangett, nbasis = 5)
+```
+
+Los resultados de la  regresión en la base de fourier con los datos originales
+
+```{r}
+res.Fou.basis0 = fregre.basis(X, y, basis.x = basis1)
+summary(res.Fou.basis0,plot = FALSE)
+```
+
+Los resultados de la  regresión en la base de fourier con la primera derivada de las curvas
+
+```{r}
+res.Fou.basis1 <- fregre.basis(X.d1, y, basis.x = basis1)
+summary(res.Fou.basis1)
+```
+
+Los resultados de la  regresión en la base de fourier con la segunda derivada de las curvas
+
+```{r}
+res.Fou.basis2 <- fregre.basis(X.d2, y, basis.x = basis1)
+summary(res.Fou.basis2)
+```
+
+Vamos a ver que pasa si quitamos las cosas raras del analisis de la primera derivada:
+
+```{r}
+# datos "raros"
+y.1    = y[-c(43,44,34,35,140)]
+X.d1.1 = X.d1[-c(43,44,34,35,140),]
+
+res.Fou.basis1.1 = fregre.basis(X.d1.1, y.1, basis.x = basis1)
+summary(res.Fou.basis1.1)
+```
+
+Calculamos la regresion utilizando componentes principales. Empezamos diciendole que nos haga el analisis utilizando las 6 primeras CPs
+
+```{r}
+res.pc1 = fregre.pc(X.d1, y, l = 1:6)
+summary(res.pc1)
+```
+
+Aqui le decimos que nos diga que componentes son necesarias de entre las 7 primeras
+
+```{r}
+res.pc2.prel = fregre.pc.cv(X.d2, y, kmax =  7)
+res.pc2.prel
+```
+
+Y ahora hacemos el analisis con las que ha considerado necesarias
+
+```{r}
+res.pc2 = fregre.pc(X.d2, y, l = c(1,2,7,3,6))
+summary(res.pc2)
+```
+
+Comparamos con lo que se obtiene usando todas (que es donde se ve la razon por la que hemos elegido las 1,2,7,3 y 6)
+
+```{r}
+res.pc2.2 = fregre.pc(X.d2, y, l = 1:7)
+summary(res.pc2.2)
+```
+
+Repetimos el analisis sin las atipicas y las influyentes
+
+```{r}
+y.2    = y[-c(7, 43, 44,6, 7, 11, 34, 35, 43, 131, 140 )]
+X.d2.2 = X.d2[-c(7, 43, 44,6, 7, 11, 34, 35, 43, 131, 140 ),]
+```
+
+Aqui le decimos que nos diga que componentes son necesarias de entre las 7 primeras
+
+```{r}
+res.pc2.2.prel = fregre.pc.cv(X.d2.2, y.2, kmax =  7)
+res.pc2.2.prel
+```
+
+Y ahora hacemos el analisis con las 7:
+
+```{r}
+res.pc2.2 = fregre.pc(X.d2.2, y.2, l = 1:7)
+summary(res.pc2.2)
+```
+
+Ahora predecimos el indice de grasa, a la vista de la absorbance en las curvas que no hemos utilizado para construir el modelo:
+
+1) Primero cogemos las variables a utilizar en las predicciones y la variable a predecir
+
+```{r}
+
+X.test = absorp[-ind, ]
+X.test.d1 = fdata.deriv(X.test, nbasis = 19, nderiv = 1)
+X.test.d2 = fdata.deriv(X.test, nbasis = 19, nderiv = 2)
+
+y.test = tecator$y$Fat[-ind]
+```
+
+2) Ahora hacemos las predicciones utilizando algunos de los modelos que hemos estimado
+
+```{r}
+
+error = rep(0,8)
+
+# Fourier 
+y.pred   = predict(res.Fou.basis0,X.test)
+error[1] = sum((y.test-y.pred)^2)
+
+y.pred   = predict(res.Fou.basis1,X.test.d1)
+error[2] = sum((y.test-y.pred)^2)
+
+y.pred   = predict(res.Fou.basis1.1,X.test.d1)
+error[3] = sum((y.test-y.pred)^2)
+
+y.pred   =predict(res.Fou.basis2,X.test.d2)
+error[4] = sum((y.test-y.pred)^2)
+
+# Componentes principales
+y.pred   = predict(res.pc1,X.test.d1)
+error[6] = sum((y.test-y.pred)^2)
+
+y.pred   = predict(res.pc2,X.test.d2)
+error[7] = sum((y.test-y.pred)^2)
+
+y.pred   = predict(res.pc2.2,X.test.d2)
+error[8] = sum((y.test-y.pred)^2)
+
+error = sqrt(error)/length(y.test)
+names(error) = c("Fourier B0","Fourier B1","Fourier B1.1","Fourier B2","PC B0","PC B1","PC B2","PC B2.2")
+
+error
+
+```
+
+3) Finalizamos obteniendo regiones de confianza para la curva $\beta$ que acabamos de estimar siguiendo la metodologia de Febrero & Oviedo, pag. 20. Ojo, si no se elige un conjunto *newX = newx*, la funcion devuelve los y.boot como *"NA"s*; porque estos valores deberian ser las predicciones.
+
+```{r,eval = FALSE}
+nb = 100
+
+boots.Fou.basis1   = fregre.bootstrap(res.Fou.basis1,   nb = nb, wild=FALSE,kmax.fix = TRUE, alpha = 0.99)
+boots.Fou.basis1.1 = fregre.bootstrap(res.Fou.basis1.1, nb = nb, wild=FALSE,kmax.fix = TRUE, alpha = 0.99)
+boots.pc2  =         fregre.bootstrap(res.pc2,          nb = nb, wild=FALSE,kmax.fix = TRUE, alpha = 0.99)
+```
+
+# Regresión no parametrica
+
+Ahora pasamos a la estimacion no parametrica de las curvas. Comenzamos eligiendo la ventana con la opcion defecto, *que es el percentil 5 de las distancias entre las curvas disponibles*
+
+```{r}
+res.np.1 = fregre.np(X.d1,y)
+summary(res.np.1)
+```
+
+Usando Validacion cruzada (*CV*) para elegir la ventana. Los candidatos son una sucesion de longitud 25 entre los percentiles 2.5 y 25.
+
+```{r}
+res.np.cv.1 = fregre.np.cv(X.d1,y)
+summary(res.np.cv.1)
+```
+
+Probamos con otras h's:
+
+```{r}
+res.np.cv2=fregre.np.cv(X.d1,y, h=seq(from=0.0006498587,to=0.006498587,length.out=11))
+summary(res.np.cv2)
+```
+
+Tenemos un caso claro de overfitting. Pero es que, en realidad, no estabamos usando CV. Estabamos empleando una penalizacion. Ahora vamos a utilizar CV de verdad.
+
+```{r}
+res.np.cv2.2 = fregre.np.cv(X.d1,y, h=seq(from=0.0006498587,to=2*0.006498587,length.out=25),type.CV=CV.S)
+summary(res.np.cv2.2)
+```
+
+Nos ha salido un outlier. Repetimos sin el
+
+```{r}
+res.np.cv2.2.1=fregre.np.cv(X.d1[-97],y[-97], h=seq(from=0.0006498587,to=2*0.006498587,length.out=25),type.CV=CV.S)
+summary(res.np.cv2.2.1)
+```
+
+Hacemos las predicciones:
+
+```{r}
+error.parametric = error
+
+error = rep(0,5)
+
+y.pred  = predict(res.np.1,X.test.d1)
+error[1] =sum((y.test - y.pred)^2 )
+
+y.pred   = predict(res.np.cv.1,X.test.d1)
+error[2] =sum((y.test - y.pred)^2 )
+
+y.pred   = predict(res.np.cv2,X.test.d1)
+error[3] =sum((y.test - y.pred)^2 )
+
+y.pred  = predict(res.np.cv2.2,X.test.d1)
+error[4] =sum((y.test - y.pred)^2 )
+
+y.pred   = predict(res.np.cv2.2.1,X.test.d1)
+error[5] =sum((y.test - y.pred)^2 )
+
+error = sqrt(error)/length(y.test)
+names(error)=c("default","Penal.def","Penal2.Overf","RealCV","RealCV.NoOut")
+```
+
+Y estos son los errores obtenidos, que son menores que los del caso parametrico y, a su vez
+
+```{r}
+# Errores regresion no parametrica
+error
+```
+
+```{r}
+# Errores regresion parametrica
+error.parametric
+```
+
+## Bootstrap de la media
+
+Vamos a extraer una muestra de tamano n de una normal con media mu, Luego tomamos B muestras bootstrap de esta muestra. Tambien tomaremos B muestras del mismo tamano de una normal y comparamos las medias muestrales de las mestras bootstrap con las muestrales.
+
+```{r,echo = FALSE}
+medias.f=function(b){
+  
+  sample = sample(muestra,n,replace = TRUE)
+  media.b = mean(sample) - sample.mean
+  media.muestral = mean(rnorm(n,mean = mu))
+  
+  return(c(media.b,media.muestral))
+}
+```
+
+
+```{r}
+mu = 0;n = 100; B = 1000
+
+muestra = rnorm(n,mean = mu)
+sample.mean = mean(muestra)
+
+medias = unlist(lapply(1:B, FUN = medias.f))
+medias = data.frame(t(matrix(medias,ncol = B)))
+names(medias)=c("Medias bootstrap","Medias muestrales")
+```
+
+Calculamos los histogramas de las dos series
+
+```{r}
+par(mfrow=c(2,1))
+hist(medias[,1],main="Medias bootstrap",xlab="")
+hist(medias[,2],main="Medias muestrales",xlab="")
+par(mfrow=c(1,1))
+```
+
+Prueba de Kolmogorov para comparar las dos muestras
+
+```{r}
+ks.test(medias[,1],medias[,2])
+```
+
+Estimamos las funciones de densidad que tenemos a partir de las muestras bootstrap y teoricas. Representamos la función  de densidad teorica en los puntos xs
+
+```{r}
+fdens.medias.b = density(medias[,1])
+fdens.medias.m = density(medias[,2])
+ys = dnorm(sort(medias[,1]),sd=1/(n^.5))
+xs = seq(min(medias)-.5,max(medias)+5,length.out = 1000)
+
+max = max(c(fdens.medias.b$y,fdens.medias.m$y,ys))
+
+plot(1, xlim = c(-.5,.5), ylim = c(0, max),
+     ylab="density",xlab=" ", type="n",
+     main="Estimacion de funciones de densidad")
+lines(fdens.medias.b,col="green")
+lines(fdens.medias.m,col="red")
+lines(sort(xs),dnorm(xs,sd=1/(n^.5)),col="blue")
+legend("topleft", 
+       legend = rbind("de la media bootstrap",
+                      "de la media muestral","densidad teorica"), 
+       col = c("green","red","blue"), lwd = 1)
+```

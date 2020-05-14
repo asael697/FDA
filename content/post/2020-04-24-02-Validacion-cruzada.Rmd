@@ -1,25 +1,34 @@
 ---
-title: "Clase 02: Analizando los datos de Crecimiento"
-author: "Juan Antonio Cuesta-Albetos"
+title: "Clase 02: Analizando los datos de crecimiento"
+author: "Juan Antonio Cuesta-Albertos"
 date: 2020-04-24
 tags: ["cross validation", "splines", "regresion"]
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  dpi = 150,
+  fig.asp = 0.8,
+  fig.width = 10,
+  out.width = "70%",
+  fig.align = "center"
+)
+
 library(fda.usc)
 ```
 
+Hacemos una estimación de las curvas de crecimiento usando B-splines e interpolación lineal y comparamos, usando validación cruzada para determinar el procedimiento con mejores resultados. 
 
-Hacemos una estimacion de las curvas de crecimiento usando B-splines e interpolacion lineal y comparamos, usando validacion cruzada para determinar el procedimiento con mejores resultados. 
-
-Los datos a utilizar es **growth**, es una lista de pesos de 39 ninios y 54 ninias de edades entre 1 a 18 anios, para el estudio de crecimiento Berkeley. Los datos estan disponible en el paquete **fda**, para acceder a su documentacion basta usar:
+Los datos a utilizar es **growth**, es una lista de pesos de 39 niños y 54 niñas de edades entre 1 a 18 años, para el estudio de crecimiento Berkeley. Los datos están disponible en el paquete **fda**, para acceder a su documentación basta usar:
 
 ```{r,eval=FALSE}
 ?growth
 ```
 
-Se generan algunas variables adicionales que sera utiles en el analisis
+Se generan algunas variables adicionales que sera útiles en el análisis
+
 ```{r}
 # longitud de las edades
 nage  =   length(growth$age)
@@ -38,12 +47,12 @@ hgtm = growth$hgtm;hgtf = growth$hgtf
 
 # 1. Se suavizan los datos
 
-Esta tecnica utiliza los metodos de suavizado habituales para suavizar los datos, pero no se garantiza que produzca un ajuste monotono. Esto puede no ser muy importante para la estimacion de la funcion de altura, pero puede tener consecuencias mucho mas graves para la velocidad y aceleraciones. Vea el metodo de suavizado monotono a continuacion para obtener una mejor solucion, pero con una sobrecarga del calculo.
+Esta técnica utiliza los métodos de suavizado para estimar las curvas, pero no se garantiza que produzca un ajuste monótono. Esto puede no ser muy importante para la estimación de la función de altura, pero puede tener consecuencias mucho mas graves para la velocidad y aceleraciones. Vea el método de suavizado monótono a continuación para obtener una mejor solución, pero con una sobrecarga del calculo.
 
-###  Creacion del objeto fd
+###  Creación del objeto fd
 
-Una base B-spline basis con nodos en valores de edad y  orden 6, es utilizado. Llamando a la funcion *smooth.basisPar()* obtenemos un spline cubico. Sin embargo, para obtener una imagen 
-suavizada de la aceleracion, se necesita un spline de grado 5 y orden 6. 
+Una base B-spline con nodos en valores de edad y  orden 6, es utilizado. Llamando a la función *smooth.basisPar()* obtenemos un spline cubico. Sin embargo, para obtener una imagen 
+suavizada de la aceleración, se necesita un spline de grado 5 y orden 6. 
 
 ```{r}
 # nodos 
@@ -61,13 +70,13 @@ hgtbasis = create.bspline.basis(range(age), nbasis, norder, age)
 
 ### Suavizando los objetos, penalizando la 4ta derivada
 
-Esto devuelve un estimador mas suave de la funcion de aceleracion
+Esto devuelve un estimador mas suave de la función de aceleración
 
 ```{r}
 growfdPar = fdPar(fdobj = hgtbasis,Lfdobj = 4, lambda = 1e-2)
 ```
 
-Hasta aqui hemos creado la base que vamos a utlizar para desarrollar las curvas. A partir de ahora realizamos validacion cruzada. Las siguientes lineas de codigos son para generar una matriz que almacene los errores por metodo y genero, esto es, para simplificar la presentacion de los resultados.
+Hasta aquí hemos creado la base que vamos a utilizar para desarrollar las curvas. A partir de ahora realizamos validación cruzada. Las siguientes lineas de códigos son para generar una matriz que almacene los errores por método y genero, esto es, para simplificar la presentación de los resultados.
 
 ```{r}
 # Matriz para almacenar los errores
@@ -78,9 +87,7 @@ colnames(error)  = c("Splines","lineal")
 row.names(error) = c("Hombres","mujeres","Total")
 ```
 
-El metodo a utilizar es un leave one out cross validation, la idea es eliminar una observacion, predecirla con el metodo utilizado, y calcular el error de prediccion.
-
-Cada metodo se aplica  a cada genero (hombre y mujer), en el suavizado por splines, primero se estiman los coeficientes de la base, segundo se realiza una prediccion, y se finaliza calculando el error. En el suavizado lineal se aplican los mismos pasos, pero sin necesidad de recurrir a las funciones de *fda*
+El método a utilizar es un leave one out cross validation, la idea es eliminar una observación, predecirla con el método utilizado, y calcular el error de predicción. Cada método se aplica  a cada genero (hombre y mujer), en el suavizado por splines, primero se estiman los coeficientes de la base, segundo se realiza una predicción, y se finaliza calculando el error. En el suavizado lineal se aplican los mismos pasos, pero sin necesidad de recurrir a las funciones de *fda*.
 
 ```{r}
 for (i in 2:(nage-1)){
@@ -113,11 +120,10 @@ for (i in 2:(nage-1)){
 error[3,] = apply(error,2,sum)
 ```
 
-El error obtenido para cada metodo es:
+El error obtenido para cada método es:
 
 ```{r}
 error
 ```
-
 
 Por lo tanto, el suavizado lineal ofrece un mejor ajuste a la curva de alturas.

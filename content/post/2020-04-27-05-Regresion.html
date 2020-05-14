@@ -1,0 +1,601 @@
+---
+title: 'Clase 05: Regresion lineal'
+author: "Juan Antonio Cuesta-Albertos"
+date: 2020-04-27
+tags: ["regresion lineal", "base de Fourier","Componentes principales"]
+---
+
+
+
+<p>Analisis de regresion lineal del contenido en grasa de los datos Tecator en funcion de su absorbance. Comenzamos por cargar la libreria fda.usc y seleccionar los datos a analizar.</p>
+<pre class="r"><code>library(&quot;fda.usc&quot;)
+
+data(tecator)
+
+absorp = tecator$absorp.fdata
+head(tecator$y)
+##    Fat Water Protein
+## 1 22.5  60.5    16.7
+## 2 40.1  46.0    13.5
+## 3  8.4  71.0    20.5
+## 4  5.9  72.8    20.7
+## 5 25.5  58.3    15.5
+## 6 42.7  44.0    13.7</code></pre>
+<p>Tenemos 215 datos (<em>curvas</em>) Pero construimos el modelo con solo los 165 primeros. Dejamos las 50 restantes para comprobaciones. Utilizamos una notacion mas comoda para las variables a utilizar (<em>que son la absorbance y sus dos primeras derivadas</em>). Metemos en</p>
+<ul>
+<li><p><strong>y</strong>: el porcentaje en grasa de cada muestra</p></li>
+<li><p><strong>X</strong>: las absorbances de cada muestra de carne</p></li>
+</ul>
+<pre class="r"><code># Primeros 165 datos
+ind = 1:165
+tt = absorp[[&quot;argvals&quot;]]
+y  = tecator$y$Fat[ind]
+X  = absorp[ind, ]</code></pre>
+<p>Calculamos las derivadas de las absorvances en una base de bsplines de dimension 19.</p>
+<pre class="r"><code>X.d1 = fdata.deriv(X, nbasis = 19, nderiv = 1)
+X.d2 = fdata.deriv(X, nbasis = 19, nderiv = 2)</code></pre>
+<p>Para ver si existe relacion entre el contenido de grasa y la absorvance y sus dos primeras derivadas, dibujamos las curvas de absorcion utilizando como colores los porcentajes de grasa.</p>
+<pre class="r"><code>plot(X, col = y)</code></pre>
+<p><img src="/post/2020-04-27-05-Regresion_files/figure-html/unnamed-chunk-4-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>Puede que tengamos demasiados valores. Para reducirlos, vamos a dividir las muestras de carne en grupos, segun su contenido en grasa. El numero de grupos es uno mas el numero de valores que haya en cortes. Los valores de esta variable determinan los grupos, luego repetimois el grafico usandos un color para cada grupo.</p>
+<pre class="r"><code>color=2
+colores=0*y + color
+cortes=c(10,20)
+
+for (ic in cortes) 
+  colores[y &gt; ic] = colores[y &gt; ic] + 1
+
+# Definimos el mallado para las 3 graficas
+layout(matrix(c(1,1,2,3), 2, 2, byrow = TRUE))
+
+plot(X,   col = colores)
+plot(X.d1,col = colores)
+plot(X.d2,col = colores)</code></pre>
+<p><img src="/post/2020-04-27-05-Regresion_files/figure-html/unnamed-chunk-5-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<div id="regresion-lineal" class="section level2">
+<h2>Regresion lineal</h2>
+<p>Estimamos la curva que determina la regresion lineal utilizando una base de Fourier de dimension 5</p>
+<pre class="r"><code>rangett = absorp$rangeval
+basis1 = create.fourier.basis(rangeval = rangett, nbasis = 5)</code></pre>
+<p>Los resultados de la regresión en la base de fourier con los datos originales</p>
+<pre class="r"><code>res.Fou.basis0 = fregre.basis(X, y, basis.x = basis1)
+summary(res.Fou.basis0,plot = FALSE)
+##  *** Summary Functional Data Regression with representation in Basis *** 
+## 
+## Call:
+## fregre.basis(fdataobj = X, y = y, basis.x = basis1)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -11.9896  -2.8364   0.6455   3.0730   8.2308 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  17.3939     0.3354  51.859  &lt; 2e-16 ***
+## X.const      -1.0101     0.1136  -8.888 1.28e-15 ***
+## X.sin1      -20.7902     1.4518 -14.320  &lt; 2e-16 ***
+## X.cos1       -1.8727     0.7531  -2.487   0.0139 *  
+## X.sin2       29.4423     1.4404  20.440  &lt; 2e-16 ***
+## X.cos2      -20.7486     9.6933  -2.141   0.0338 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 4.308 on 159 degrees of freedom
+## Multiple R-squared:  0.8833, Adjusted R-squared:  0.8796 
+## F-statistic: 240.6 on 5 and 159 DF,  p-value: &lt; 2.2e-16
+## 
+## -Names of possible atypical curves: No atypical curves 
+## -Names of possible influence curves: 34 35 44 139 140</code></pre>
+<p><img src="/post/2020-04-27-05-Regresion_files/figure-html/unnamed-chunk-7-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>Los resultados de la regresión en la base de fourier con la primera derivada de las curvas</p>
+<pre class="r"><code>res.Fou.basis1 &lt;- fregre.basis(X.d1, y, basis.x = basis1)
+summary(res.Fou.basis1)
+##  *** Summary Functional Data Regression with representation in Basis *** 
+## 
+## Call:
+## fregre.basis(fdataobj = X.d1, y = y, basis.x = basis1)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -12.8616  -2.0311   0.1587   2.5343   6.6675 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   17.3939     0.2637  65.972  &lt; 2e-16 ***
+## X.d1.const   139.7134    31.5115   4.434 1.72e-05 ***
+## X.d1.sin1   -465.2581    33.7403 -13.789  &lt; 2e-16 ***
+## X.d1.cos1   -205.2282    34.1841  -6.004 1.26e-08 ***
+## X.d1.sin2    699.5649   105.5032   6.631 4.95e-10 ***
+## X.d1.cos2    939.4959    42.6310  22.038  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 3.387 on 159 degrees of freedom
+## Multiple R-squared:  0.9279, Adjusted R-squared:  0.9256 
+## F-statistic:   409 on 5 and 159 DF,  p-value: &lt; 2.2e-16
+## 
+## -Names of possible atypical curves: 43 44 
+## -Names of possible influence curves: 34 35 140</code></pre>
+<p><img src="/post/2020-04-27-05-Regresion_files/figure-html/unnamed-chunk-8-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>Los resultados de la regresión en la base de fourier con la segunda derivada de las curvas</p>
+<pre class="r"><code>res.Fou.basis2 &lt;- fregre.basis(X.d2, y, basis.x = basis1)
+summary(res.Fou.basis2)
+##  *** Summary Functional Data Regression with representation in Basis *** 
+## 
+## Call:
+## fregre.basis(fdataobj = X.d2, y = y, basis.x = basis1)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -12.9057  -2.2268   0.0398   2.5565   7.2637 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  1.739e+01  2.702e-01  64.370  &lt; 2e-16 ***
+## X.d2.const  -8.066e+02  2.118e+03  -0.381    0.704    
+## X.d2.sin1   -1.957e+03  2.349e+03  -0.833    0.406    
+## X.d2.cos1   -1.849e+04  1.119e+03 -16.527  &lt; 2e-16 ***
+## X.d2.sin2   -1.433e+04  9.666e+02 -14.820  &lt; 2e-16 ***
+## X.d2.cos2    1.834e+04  3.263e+03   5.619 8.41e-08 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 3.471 on 159 degrees of freedom
+## Multiple R-squared:  0.9242, Adjusted R-squared:  0.9218 
+## F-statistic: 387.9 on 5 and 159 DF,  p-value: &lt; 2.2e-16
+## 
+## -Names of possible atypical curves: 43 44 
+## -Names of possible influence curves: 34 35 44 45 140</code></pre>
+<p><img src="/post/2020-04-27-05-Regresion_files/figure-html/unnamed-chunk-9-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>Vamos a ver que pasa si quitamos las cosas raras del analisis de la primera derivada:</p>
+<pre class="r"><code># datos &quot;raros&quot;
+y.1    = y[-c(43,44,34,35,140)]
+X.d1.1 = X.d1[-c(43,44,34,35,140),]
+
+res.Fou.basis1.1 = fregre.basis(X.d1.1, y.1, basis.x = basis1)
+summary(res.Fou.basis1.1)
+##  *** Summary Functional Data Regression with representation in Basis *** 
+## 
+## Call:
+## fregre.basis(fdataobj = X.d1.1, y = y.1, basis.x = basis1)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -10.0610  -1.5140   0.0135   1.9200   7.0753 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)    16.8706     0.2164  77.946  &lt; 2e-16 ***
+## X.d1.1.const  176.4581    26.4184   6.679 4.12e-10 ***
+## X.d1.1.sin1  -545.1888    29.9606 -18.197  &lt; 2e-16 ***
+## X.d1.1.cos1  -271.5090    29.5158  -9.199 2.42e-16 ***
+## X.d1.1.sin2   736.7468    89.6619   8.217 7.98e-14 ***
+## X.d1.1.cos2   993.7841    35.6045  27.912  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 2.738 on 154 degrees of freedom
+## Multiple R-squared:  0.9501, Adjusted R-squared:  0.9485 
+## F-statistic:   587 on 5 and 154 DF,  p-value: &lt; 2.2e-16
+## 
+## -Names of possible atypical curves: 129 
+## -Names of possible influence curves: No influence curves</code></pre>
+<p><img src="/post/2020-04-27-05-Regresion_files/figure-html/unnamed-chunk-10-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>Calculamos la regresion utilizando componentes principales. Empezamos diciendole que nos haga el analisis utilizando las 6 primeras CPs</p>
+<pre class="r"><code>res.pc1 = fregre.pc(X.d1, y, l = 1:6)
+summary(res.pc1)
+##  *** Summary Functional Data Regression with Principal Components ***
+## 
+## Call:
+## fregre.pc(fdataobj = X.d1, y = y, l = 1:6)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -9.9929 -1.4385  0.2205  1.9991  7.1465 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   17.3939     0.2198  79.118  &lt; 2e-16 ***
+## PC1          473.7305     9.2343  51.301  &lt; 2e-16 ***
+## PC2         -126.8038    11.0103 -11.517  &lt; 2e-16 ***
+## PC3          -34.2883    23.6050  -1.453  0.14832    
+## PC4          383.5051    28.9910  13.228  &lt; 2e-16 ***
+## PC5         -204.2714    71.6890  -2.849  0.00496 ** 
+## PC6          270.7137    95.5960   2.832  0.00523 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 2.824 on 158 degrees of freedom
+## Multiple R-squared:  0.9502, Adjusted R-squared:  0.9483 
+## F-statistic:   502 on 6 and 158 DF,  p-value: &lt; 2.2e-16
+## 
+## 
+## -With 6 Principal Components is  explained  99.43 %
+##  of the variability of explicative variables. 
+## 
+## -Variability for each  principal components -PC- (%):
+##   PC1   PC2   PC3   PC4   PC5   PC6 
+## 50.08 35.37  7.63  5.05  0.83  0.47 
+## -Names of possible atypical curves: 43 44 
+## -Names of possible influence curves: 6 7 34 35 140</code></pre>
+<p><img src="/post/2020-04-27-05-Regresion_files/figure-html/unnamed-chunk-11-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>Aqui le decimos que nos diga que componentes son necesarias de entre las 7 primeras</p>
+<pre class="r"><code>res.pc2.prel = fregre.pc.cv(X.d2, y, kmax =  7)
+res.pc2.prel
+## $fregre.pc
+## 
+## -Call: fregre.pc(fdataobj = fdataobj, y = y, l = drop(pc.opt3), lambda = rn.opt,     P = P, weights = weights)
+## 
+## -Coefficients:
+## (Intercept)          PC1          PC2          PC7          PC3          PC6  
+##       17.39     -4441.54     -2271.84    -11936.49     -1066.84      3607.56  
+## 
+## -R squared:  0.9544712
+## -Residual variance:  7.239393 
+## 
+## $pc.opt
+## PC1 PC2 PC7 PC3 PC6 
+##   1   2   7   3   6 
+## 
+## $lambda.opt
+## [1] 0
+## 
+## $PC.order
+##          PC(1) PC(2) PC(3) PC(4) PC(5) PC(6) PC(7)
+## lambda=0     1     2     7     3     6     5     4
+## 
+## $MSC.order
+##             PC(1)    PC(2)    PC(3)    PC(4)    PC(5)    PC(6)    PC(7)
+## lambda=0 2.852951 2.258293 2.144444 2.132271 2.128167 2.159107 2.190052</code></pre>
+<p>Y ahora hacemos el analisis con las que ha considerado necesarias</p>
+<pre class="r"><code>res.pc2 = fregre.pc(X.d2, y, l = c(1,2,7,3,6))
+summary(res.pc2)
+##  *** Summary Functional Data Regression with Principal Components ***
+## 
+## Call:
+## fregre.pc(fdataobj = X.d2, y = y, l = c(1, 2, 7, 3, 6))
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -11.0975  -1.6631   0.0457   1.6945   8.6899 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  1.739e+01  2.095e-01  83.040  &lt; 2e-16 ***
+## PC1         -4.442e+03  7.943e+01 -55.916  &lt; 2e-16 ***
+## PC2         -2.272e+03  1.721e+02 -13.199  &lt; 2e-16 ***
+## PC7         -1.194e+04  2.352e+03  -5.075 1.07e-06 ***
+## PC3         -1.067e+03  3.939e+02  -2.709   0.0075 ** 
+## PC6          3.608e+03  1.515e+03   2.382   0.0184 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 2.691 on 159 degrees of freedom
+## Multiple R-squared:  0.9545, Adjusted R-squared:  0.953 
+## F-statistic: 666.7 on 5 and 159 DF,  p-value: &lt; 2.2e-16
+## 
+## 
+## -With 5 Principal Components is  explained  98.47 %
+##  of the variability of explicative variables. 
+## 
+## -Variability for each  principal components -PC- (%):
+##   PC1   PC2   PC7   PC3   PC6 
+## 78.32 16.67  0.09  3.18  0.22 
+## -Names of possible atypical curves: 7 43 44 
+## -Names of possible influence curves: 6 7 11 34 35 43 44 131 140 143</code></pre>
+<p><img src="/post/2020-04-27-05-Regresion_files/figure-html/unnamed-chunk-13-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>Comparamos con lo que se obtiene usando todas (que es donde se ve la razon por la que hemos elegido las 1,2,7,3 y 6)</p>
+<pre class="r"><code>res.pc2.2 = fregre.pc(X.d2, y, l = 1:7)
+summary(res.pc2.2)
+##  *** Summary Functional Data Regression with Principal Components ***
+## 
+## Call:
+## fregre.pc(fdataobj = X.d2, y = y, l = 1:7)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -11.1062  -1.6644   0.0421   1.6966   8.6710 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  1.739e+01  2.108e-01  82.517  &lt; 2e-16 ***
+## PC1         -4.441e+03  8.106e+01 -54.789  &lt; 2e-16 ***
+## PC2         -2.272e+03  1.733e+02 -13.105  &lt; 2e-16 ***
+## PC3         -1.067e+03  3.964e+02  -2.691  0.00789 ** 
+## PC4          1.386e+00  1.110e+03   0.001  0.99900    
+## PC5          3.648e+01  1.307e+03   0.028  0.97778    
+## PC6          3.608e+03  1.525e+03   2.367  0.01917 *  
+## PC7         -1.194e+04  2.367e+03  -5.042 1.25e-06 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 2.708 on 157 degrees of freedom
+## Multiple R-squared:  0.9545, Adjusted R-squared:  0.9524 
+## F-statistic: 470.2 on 7 and 157 DF,  p-value: &lt; 2.2e-16
+## 
+## 
+## -With 7 Principal Components is  explained  99.18 %
+##  of the variability of explicative variables. 
+## 
+## -Variability for each  principal components -PC- (%):
+##   PC1   PC2   PC3   PC4   PC5   PC6   PC7 
+## 78.32 16.67  3.18  0.41  0.30  0.22  0.09 
+## -Names of possible atypical curves: 7 43 44 
+## -Names of possible influence curves: 6 7 11 34 35 43 131 140</code></pre>
+<p><img src="/post/2020-04-27-05-Regresion_files/figure-html/unnamed-chunk-14-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>Repetimos el analisis sin las atipicas y las influyentes</p>
+<pre class="r"><code>y.2    = y[-c(7, 43, 44,6, 7, 11, 34, 35, 43, 131, 140 )]
+X.d2.2 = X.d2[-c(7, 43, 44,6, 7, 11, 34, 35, 43, 131, 140 ),]</code></pre>
+<p>Aqui le decimos que nos diga que componentes son necesarias de entre las 7 primeras</p>
+<pre class="r"><code>res.pc2.2.prel = fregre.pc.cv(X.d2.2, y.2, kmax =  7)
+res.pc2.2.prel
+## $fregre.pc
+## 
+## -Call: fregre.pc(fdataobj = fdataobj, y = y, l = drop(pc.opt3), lambda = rn.opt,     P = P, weights = weights)
+## 
+## -Coefficients:
+## (Intercept)          PC1          PC2          PC7          PC3  
+##       16.42     -4902.72     -1378.06     10211.73     -1190.40  
+## 
+## -R squared:  0.9653628
+## -Residual variance:  4.775766 
+## 
+## $pc.opt
+## PC1 PC2 PC7 PC3 
+##   1   2   7   3 
+## 
+## $lambda.opt
+## [1] 0
+## 
+## $PC.order
+##          PC(1) PC(2) PC(3) PC(4) PC(5) PC(6) PC(7)
+## lambda=0     1     2     7     3     5     6     4
+## 
+## $MSC.order
+##             PC(1)    PC(2)    PC(3)    PC(4)    PC(5)    PC(6)    PC(7)
+## lambda=0 1.995779 1.797951 1.709043 1.692833 1.702703 1.718703 1.750575</code></pre>
+<p>Y ahora hacemos el analisis con las 7:</p>
+<pre class="r"><code>res.pc2.2 = fregre.pc(X.d2.2, y.2, l = 1:7)
+summary(res.pc2.2)
+##  *** Summary Functional Data Regression with Principal Components ***
+## 
+## Call:
+## fregre.pc(fdataobj = X.d2.2, y = y.2, l = 1:7)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -7.5099 -1.3277 -0.0672  1.3760  5.9767 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)    16.4231     0.1733  94.773  &lt; 2e-16 ***
+## PC1         -4913.9646    79.8199 -61.563  &lt; 2e-16 ***
+## PC2         -1383.8926   190.0398  -7.282 1.80e-11 ***
+## PC3         -1190.4113   430.0295  -2.768  0.00636 ** 
+## PC4           249.9709   919.8609   0.272  0.78619    
+## PC5         -2125.0010  1168.4545  -1.819  0.07099 .  
+## PC6         -2165.8852  1385.8497  -1.563  0.12022    
+## PC7         10333.9480  2253.5720   4.586 9.57e-06 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 2.164 on 148 degrees of freedom
+## Multiple R-squared:  0.9667, Adjusted R-squared:  0.9651 
+## F-statistic: 613.8 on 7 and 148 DF,  p-value: &lt; 2.2e-16
+## 
+## 
+## -With 7 Principal Components is  explained  99.14 %
+##  of the variability of explicative variables. 
+## 
+## -Variability for each  principal components -PC- (%):
+##   PC1   PC2   PC3   PC4   PC5   PC6   PC7 
+## 83.06 12.47  2.41  0.53  0.33  0.23  0.10 
+## -Names of possible atypical curves: 129 
+## -Names of possible influence curves: 5 10 45 143</code></pre>
+<p><img src="/post/2020-04-27-05-Regresion_files/figure-html/unnamed-chunk-17-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>Ahora predecimos el indice de grasa, a la vista de la absorbance en las curvas que no hemos utilizado para construir el modelo:</p>
+<ol style="list-style-type: decimal">
+<li>Primero cogemos las variables a utilizar en las predicciones y la variable a predecir</li>
+</ol>
+<pre class="r"><code>
+X.test = absorp[-ind, ]
+X.test.d1 = fdata.deriv(X.test, nbasis = 19, nderiv = 1)
+X.test.d2 = fdata.deriv(X.test, nbasis = 19, nderiv = 2)
+
+y.test = tecator$y$Fat[-ind]</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>Ahora hacemos las predicciones utilizando algunos de los modelos que hemos estimado</li>
+</ol>
+<pre class="r"><code>
+error = rep(0,8)
+
+# Fourier 
+y.pred   = predict(res.Fou.basis0,X.test)
+error[1] = sum((y.test-y.pred)^2)
+
+y.pred   = predict(res.Fou.basis1,X.test.d1)
+error[2] = sum((y.test-y.pred)^2)
+
+y.pred   = predict(res.Fou.basis1.1,X.test.d1)
+error[3] = sum((y.test-y.pred)^2)
+
+y.pred   =predict(res.Fou.basis2,X.test.d2)
+error[4] = sum((y.test-y.pred)^2)
+
+# Componentes principales
+y.pred   = predict(res.pc1,X.test.d1)
+error[6] = sum((y.test-y.pred)^2)
+
+y.pred   = predict(res.pc2,X.test.d2)
+error[7] = sum((y.test-y.pred)^2)
+
+y.pred   = predict(res.pc2.2,X.test.d2)
+error[8] = sum((y.test-y.pred)^2)
+
+error = sqrt(error)/length(y.test)
+names(error) = c(&quot;Fourier B0&quot;,&quot;Fourier B1&quot;,&quot;Fourier B1.1&quot;,&quot;Fourier B2&quot;,&quot;PC B0&quot;,&quot;PC B1&quot;,&quot;PC B2&quot;,&quot;PC B2.2&quot;)
+
+error
+##   Fourier B0   Fourier B1 Fourier B1.1   Fourier B2        PC B0        PC B1 
+##    0.6217978    0.4810450    0.5438338    0.4885876    0.0000000    0.4630721 
+##        PC B2      PC B2.2 
+##    0.4534612    0.4898044</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>Finalizamos obteniendo regiones de confianza para la curva <span class="math inline">\(\beta\)</span> que acabamos de estimar siguiendo la metodologia de Febrero &amp; Oviedo, pag. 20. Ojo, si no se elige un conjunto <em>newX = newx</em>, la funcion devuelve los y.boot como <em>“NA”s</em>; porque estos valores deberian ser las predicciones.</li>
+</ol>
+<pre class="r"><code>nb = 100
+
+boots.Fou.basis1   = fregre.bootstrap(res.Fou.basis1,   nb = nb, wild=FALSE,kmax.fix = TRUE, alpha = 0.99)
+boots.Fou.basis1.1 = fregre.bootstrap(res.Fou.basis1.1, nb = nb, wild=FALSE,kmax.fix = TRUE, alpha = 0.99)
+boots.pc2  =         fregre.bootstrap(res.pc2,          nb = nb, wild=FALSE,kmax.fix = TRUE, alpha = 0.99)</code></pre>
+</div>
+<div id="regresión-no-parametrica" class="section level1">
+<h1>Regresión no parametrica</h1>
+<p>Ahora pasamos a la estimacion no parametrica de las curvas. Comenzamos eligiendo la ventana con la opcion defecto, <em>que es el percentil 5 de las distancias entre las curvas disponibles</em></p>
+<pre class="r"><code>res.np.1 = fregre.np(X.d1,y)
+summary(res.np.1)
+##  *** Summary Functional Non-linear Model *** 
+## 
+## -Call: fregre.np(fdataobj = X.d1, y = y)
+## 
+## -Bandwidth (h):  0.01336598
+## -R squared:  0.922911
+## -Residual variance:  13.00529 on  149.8597  degrees of freedom
+## -Names of possible atypical curves: No atypical curves 
+## -Names of possible influence curves: 33 34 35 43 44 45 99 127 129 139 
+##  It prints only the 10 most influence curves</code></pre>
+<p><img src="/post/2020-04-27-05-Regresion_files/figure-html/unnamed-chunk-21-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>Usando Validacion cruzada (<em>CV</em>) para elegir la ventana. Los candidatos son una sucesion de longitud 25 entre los percentiles 2.5 y 25.</p>
+<pre class="r"><code>res.np.cv.1 = fregre.np.cv(X.d1,y)
+summary(res.np.cv.1)
+##  *** Summary Functional Non-linear Model *** 
+## 
+## -Call: fregre.np.cv(fdataobj = X.d1, y = y)
+## 
+## -Bandwidth (h):  0.01040582
+## -R squared:  0.9576696
+## -Residual variance:  7.665626 on  139.6102  degrees of freedom
+## -Names of possible atypical curves: No atypical curves 
+## -Names of possible influence curves: 33 34 35 43 44 45 99 127 139 140</code></pre>
+<p><img src="/post/2020-04-27-05-Regresion_files/figure-html/unnamed-chunk-22-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>Probamos con otras h’s:</p>
+<pre class="r"><code>res.np.cv2=fregre.np.cv(X.d1,y, h=seq(from=0.0006498587,to=0.006498587,length.out=11))
+summary(res.np.cv2)
+##  *** Summary Functional Non-linear Model *** 
+## 
+## -Call: fregre.np.cv(fdataobj = X.d1, y = y, h = seq(from = 0.0006498587, 
+##     to = 0.006498587, length.out = 11))
+## 
+## -Bandwidth (h):  0.0006498587
+## -R squared:  0.9999993
+## -Residual variance:  0.001224179 on  14.31195  degrees of freedom
+## -Names of possible atypical curves: 69 
+## -Names of possible influence curves: No influence curves</code></pre>
+<p><img src="/post/2020-04-27-05-Regresion_files/figure-html/unnamed-chunk-23-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>Tenemos un caso claro de overfitting. Pero es que, en realidad, no estabamos usando CV. Estabamos empleando una penalizacion. Ahora vamos a utilizar CV de verdad.</p>
+<pre class="r"><code>res.np.cv2.2 = fregre.np.cv(X.d1,y, h=seq(from=0.0006498587,to=2*0.006498587,length.out=25),type.CV=CV.S)
+summary(res.np.cv2.2)
+##  *** Summary Functional Non-linear Model *** 
+## 
+## -Call: fregre.np.cv(fdataobj = X.d1, y = y, h = seq(from = 0.0006498587, 
+##     to = 2 * 0.006498587, length.out = 25), type.CV = CV.S)
+## 
+## -Bandwidth (h):  0.005794573
+## -R squared:  0.9910883
+## -Residual variance:  2.371664 on  94.99897  degrees of freedom
+## -Names of possible atypical curves: 97 
+## -Names of possible influence curves: No influence curves</code></pre>
+<p><img src="/post/2020-04-27-05-Regresion_files/figure-html/unnamed-chunk-24-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>Nos ha salido un outlier. Repetimos sin el</p>
+<pre class="r"><code>res.np.cv2.2.1=fregre.np.cv(X.d1[-97],y[-97], h=seq(from=0.0006498587,to=2*0.006498587,length.out=25),type.CV=CV.S)
+summary(res.np.cv2.2.1)
+##  *** Summary Functional Non-linear Model *** 
+## 
+## -Call: fregre.np.cv(fdataobj = X.d1[-97], y = y[-97], h = seq(from = 0.0006498587, 
+##     to = 2 * 0.006498587, length.out = 25), type.CV = CV.S)
+## 
+## -Bandwidth (h):  0.005794573
+## -R squared:  0.9922444
+## -Residual variance:  2.077983 on  94.35892  degrees of freedom
+## -Names of possible atypical curves: No atypical curves 
+## -Names of possible influence curves: No influence curves</code></pre>
+<p><img src="/post/2020-04-27-05-Regresion_files/figure-html/unnamed-chunk-25-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>Hacemos las predicciones:</p>
+<pre class="r"><code>error.parametric = error
+
+error = rep(0,5)
+
+y.pred  = predict(res.np.1,X.test.d1)
+error[1] =sum((y.test - y.pred)^2 )
+
+y.pred   = predict(res.np.cv.1,X.test.d1)
+error[2] =sum((y.test - y.pred)^2 )
+
+y.pred   = predict(res.np.cv2,X.test.d1)
+error[3] =sum((y.test - y.pred)^2 )
+
+y.pred  = predict(res.np.cv2.2,X.test.d1)
+error[4] =sum((y.test - y.pred)^2 )
+
+y.pred   = predict(res.np.cv2.2.1,X.test.d1)
+error[5] =sum((y.test - y.pred)^2 )
+
+error = sqrt(error)/length(y.test)
+names(error)=c(&quot;default&quot;,&quot;Penal.def&quot;,&quot;Penal2.Overf&quot;,&quot;RealCV&quot;,&quot;RealCV.NoOut&quot;)</code></pre>
+<p>Y estos son los errores obtenidos, que son menores que los del caso parametrico y, a su vez</p>
+<pre class="r"><code># Errores regresion no parametrica
+error
+##      default    Penal.def Penal2.Overf       RealCV RealCV.NoOut 
+##    0.5223912    0.3884986    0.3288975    0.2777924    0.2779364</code></pre>
+<pre class="r"><code># Errores regresion parametrica
+error.parametric
+##   Fourier B0   Fourier B1 Fourier B1.1   Fourier B2        PC B0        PC B1 
+##    0.6217978    0.4810450    0.5438338    0.4885876    0.0000000    0.4630721 
+##        PC B2      PC B2.2 
+##    0.4534612    0.4898044</code></pre>
+<div id="bootstrap-de-la-media" class="section level2">
+<h2>Bootstrap de la media</h2>
+<p>Vamos a extraer una muestra de tamano n de una normal con media mu, Luego tomamos B muestras bootstrap de esta muestra. Tambien tomaremos B muestras del mismo tamano de una normal y comparamos las medias muestrales de las mestras bootstrap con las muestrales.</p>
+<pre class="r"><code>mu = 0;n = 100; B = 1000
+
+muestra = rnorm(n,mean = mu)
+sample.mean = mean(muestra)
+
+medias = unlist(lapply(1:B, FUN = medias.f))
+medias = data.frame(t(matrix(medias,ncol = B)))
+names(medias)=c(&quot;Medias bootstrap&quot;,&quot;Medias muestrales&quot;)</code></pre>
+<p>Calculamos los histogramas de las dos series</p>
+<pre class="r"><code>par(mfrow=c(2,1))
+hist(medias[,1],main=&quot;Medias bootstrap&quot;,xlab=&quot;&quot;)
+hist(medias[,2],main=&quot;Medias muestrales&quot;,xlab=&quot;&quot;)</code></pre>
+<p><img src="/post/2020-04-27-05-Regresion_files/figure-html/unnamed-chunk-31-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>par(mfrow=c(1,1))</code></pre>
+<p>Prueba de Kolmogorov para comparar las dos muestras</p>
+<pre class="r"><code>ks.test(medias[,1],medias[,2])
+## 
+##  Two-sample Kolmogorov-Smirnov test
+## 
+## data:  medias[, 1] and medias[, 2]
+## D = 0.066, p-value = 0.02566
+## alternative hypothesis: two-sided</code></pre>
+<p>Estimamos las funciones de densidad que tenemos a partir de las muestras bootstrap y teoricas. Representamos la función de densidad teorica en los puntos xs</p>
+<pre class="r"><code>fdens.medias.b = density(medias[,1])
+fdens.medias.m = density(medias[,2])
+ys = dnorm(sort(medias[,1]),sd=1/(n^.5))
+xs = seq(min(medias)-.5,max(medias)+5,length.out = 1000)
+
+max = max(c(fdens.medias.b$y,fdens.medias.m$y,ys))
+
+plot(1, xlim = c(-.5,.5), ylim = c(0, max),
+     ylab=&quot;density&quot;,xlab=&quot; &quot;, type=&quot;n&quot;,
+     main=&quot;Estimacion de funciones de densidad&quot;)
+lines(fdens.medias.b,col=&quot;green&quot;)
+lines(fdens.medias.m,col=&quot;red&quot;)
+lines(sort(xs),dnorm(xs,sd=1/(n^.5)),col=&quot;blue&quot;)
+legend(&quot;topleft&quot;, 
+       legend = rbind(&quot;de la media bootstrap&quot;,
+                      &quot;de la media muestral&quot;,&quot;densidad teorica&quot;), 
+       col = c(&quot;green&quot;,&quot;red&quot;,&quot;blue&quot;), lwd = 1)</code></pre>
+<p><img src="/post/2020-04-27-05-Regresion_files/figure-html/unnamed-chunk-33-1.png" width="70%" style="display: block; margin: auto;" /></p>
+</div>
+</div>

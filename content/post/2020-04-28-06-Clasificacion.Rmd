@@ -1,0 +1,256 @@
+---
+title: 'Clase 06: Clasificacon de datos funcionales'
+author: "Juan Antonio Cuesta-Albertos"
+date: 2020-04-27
+tags: ["clasificacion","profundidades","datos funcionales"]
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  dpi = 150,
+  fig.asp = 0.8,
+  fig.width = 10,
+  out.width = "70%",
+  fig.align = "center"
+)
+```
+
+Aquí hacemos clasificación de datos funcionales, utilizamos las librerías:
+
+ + fda.usc
+ 
+ + depth
+ 
+ + matrixcalc
+ 
+Empezamos por cargar los datos phoneme que contienen 500 ondas producidas al pronuncias los sonidos ingleses "sh", "iy", "dcl", "aa", "ao", 100 de cada uno hay 250 casos (50 de cada) en la training sample y otros tantos en la test sample.
+
+```{r, message = FALSE}
+library(fda.usc)
+library(depth)
+library(matrixcalc)
+
+data(phoneme)
+names(phoneme)
+sonidos = c("sh", "iy", "dcl", "aa", "ao")
+```
+
+Empezamos por dibujar los datos. Como son demasiados, elegimos una muestra de 25
+
+```{r}
+par(mfrow = c(2,1))
+plot(phoneme[["learn"]],col=phoneme$classlearn)
+legend("bottomleft", legend = sonidos, col = 1:5,  lwd = 1,ncol=2)
+
+muestra=50*c(1:5)
+plot(phoneme[["learn"]][muestra],col=phoneme$classlearn[muestra])
+legend("bottomleft", legend = sonidos, col = 1:5,  lwd = 1,ncol=2)
+```
+
+Seleccionamos los datos de la training y la test samples junto con sus etiquetas. También cogemos los nombres de los sonidos
+
+```{r}
+funct.phon.learn = phoneme[["learn"]]
+label.phon.learn = phoneme[["classlearn"]]
+funct.phon.test = phoneme$test
+label.phon.test = phoneme[["classtest"]]
+```
+
+##  Clasificación no paramétrica. 
+
+Vamos a probar con 11 ventanas. El resto de parámetros son las opciones defecto de la función correspondiente.
+
+```{r}
+h = 9:19
+out.np = classif.np(label.phon.learn,funct.phon.learn,h = h)
+
+summary(out.np)
+```
+
+Ahora pasamos a ver que tal predice en la muestra test.
+
+```{r}
+pred.np = predict(out.np,funct.phon.test)
+```
+
+La tabla siguiente contiene el resultado y luego ponemos algunos otros estadísticos
+
+```{r}
+result.np = table(pred.np,label.phon.test)
+
+prop.correctos.np = diag(result.np)/50
+names(prop.correctos.np) = sonidos
+
+(Prop.Total.np = mean(prop.correctos.np))
+```
+
+##  Calsificacion knn
+
+```{r}
+k = seq(from = 1,to = 11,by = 2)
+out.knn = classif.knn(label.phon.learn,funct.phon.learn,knn = k)
+summary(out.knn)
+```
+
+Ahora pasamos a ver que tal predice en la muestra test.
+
+```{r}
+pred.knn = predict(out.knn,funct.phon.test)
+```
+
+La tabla siguiente contiene el resultado y luego ponemos algunos otros estadísticos
+
+```{r}
+result.knn = table(pred.knn,label.phon.test)
+
+prop.correctos.knn = diag(result.knn)/50
+names(prop.correctos.knn) = sonidos
+
+(Prop.Total.knn = mean(prop.correctos.knn))
+```
+
+## DD-classification for functional data
+
+```{r}
+data(tecator)
+
+ab = tecator$absorp.fdata
+ab1 = fdata.deriv(ab,nderiv = 1)
+ab2 = fdata.deriv(ab,nderiv = 2)
+
+gfat = factor(as.numeric(tecator$y$Fat >= 15))
+
+# Train set
+learn = 1:165
+
+# 0 derivate
+ab.learn = ab[learn]
+ab.test = ab[-learn]
+
+# 1 derivate
+ab1.learn = ab1[learn]
+ab1.test = ab1[-learn]
+
+# 2 derivate
+ab2.learn = ab2[learn]
+ab2.test = ab2[-learn]
+
+label.tec.learn = gfat[learn]
+label.tec.test = gfat[-learn]
+```
+
+### DD-classification solo dos clases
+
+```{r}
+out0_0 = classif.DD(label.tec.learn,ab.learn,depth = "mode",classif = "np")
+summary(out0_0)
+```
+
+```{r}
+out0_1 = classif.DD(label.tec.learn,ab1.learn,depth = "mode",classif = "np")
+summary(out0_1)
+```
+
+```{r}
+out0_2 = classif.DD(label.tec.learn,ab2.learn,depth = "mode",classif = "np")
+summary(out0_2)
+```
+
+La tabla siguiente contiene el resultado y luego ponemos algunos otros estadísticos
+
+```{r}
+pred.DD.0 = predict(out0_0,ab.test)
+
+result.DD.0 = table(pred.DD.0,label.tec.test)
+Prop.Total.DD.0 = matrix.trace(result.DD.0)/sum(result.DD.0)
+prop.correctos.DD.0 = 0*c(1:2)
+
+for (i in 1:2){
+  prop.correctos.DD.0[i] = result.DD.0[i,i]/length(label.tec.test[label.tec.test==(i-1)])
+}
+
+# Proporcion de acertados
+names(prop.correctos.DD.0) = c("bajo","alto")
+round(prop.correctos.DD.0,4)
+
+# Total de aciertos
+Prop.Total.DD.0
+```
+
+La tabla siguiente contiene el resultado y luego ponemos algunos otros estadísticos.
+
+```{r}
+pred.DD.1 = predict(out0_1,ab1.test)
+
+result.DD.1 = table(pred.DD.1,label.tec.test)
+Prop.Total.DD.1 = matrix.trace(result.DD.1)/sum(result.DD.1)
+prop.correctos.DD.1 = 0*c(1:2)
+
+for (i in 1:2){
+  prop.correctos.DD.1[i] = result.DD.1[i,i]/length(label.tec.test[label.tec.test==(i-1)])
+}
+
+# Proporcion de acertados
+names(prop.correctos.DD.1) = c("bajo","alto")
+round(prop.correctos.DD.1,4)
+
+# Total de aciertos
+Prop.Total.DD.1
+```
+
+La tabla siguiente contiene el resultado y luego ponemos algunos otros estadísticos.
+
+```{r}
+pred.DD.2 = predict(out0_2,ab2.test)
+
+result.DD.2 = table(pred.DD.2,label.tec.test)
+
+Prop.Total.DD.2 = matrix.trace(result.DD.2)/sum(result.DD.2)
+prop.correctos.DD.2 = 0*c(1:2)
+
+for (i in 1:2){
+  prop.correctos.DD.2[i] = result.DD.2[i,i]/length(label.tec.test[label.tec.test==(i-1)])
+}
+
+# Proporcion de acertados
+names(prop.correctos.DD.2) = c("bajo","alto")
+round(prop.correctos.DD.2,4)
+
+# Total de aciertos
+Prop.Total.DD.2
+```
+
+Ahora aplicamos el DD-classification en un caso con mas de dos clases:
+
+```{r}
+data(phoneme)
+
+label.phon.learn = as.numeric(phoneme[["classlearn"]]) - 1
+
+DD.phon.1D = classif.DD(label.phon.learn,funct.phon.learn,depth = "mode",classif = "np")
+
+summary(DD.phon.1D)
+```
+
+La tabla siguiente contiene el resultado y luego ponemos algunos otros estadísticos.
+
+```{r}
+pred.DD.phon.1D = as.numeric(predict(DD.phon.1D,funct.phon.test))
+
+result.DD.phon.1D = table(pred.DD.phon.1D,label.phon.test)
+prop.correctos.DD.phon.1D = diag(result.DD.phon.1D)/50
+
+names(prop.correctos.DD.phon.1D) = sonidos
+prop.correctos.DD.phon.1D
+
+Prop.Total.DD.phon.1D = mean(prop.correctos.DD.phon.1D)
+Prop.Total.DD.phon.1D
+
+resultados_clasif_fonemas = c(Prop.Total.np,Prop.Total.knn,Prop.Total.DD.phon.1D)
+names(resultados_clasif_fonemas) = c("Kernel","kNN","DD-class. Fraiman_Muniz")
+
+print("los resultados han sido:")
+resultados_clasif_fonemas
+```

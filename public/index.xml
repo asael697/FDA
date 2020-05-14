@@ -12,14 +12,48 @@
     
     
     <item>
+      <title>Clase 05: Regresion lineal</title>
+      <link>/2020/04/27/clase-05-regresion-lineal/</link>
+      <pubDate>Mon, 27 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/04/27/clase-05-regresion-lineal/</guid>
+      <description>Analisis de regresion lineal del contenido en grasa de los datos Tecator en funcion de su absorbance. Comenzamos por cargar la libreria fda.usc y seleccionar los datos a analizar.
+library(&amp;quot;fda.usc&amp;quot;)data(tecator)absorp = tecator$absorp.fdatahead(tecator$y)## Fat Water Protein## 1 22.5 60.5 16.7## 2 40.1 46.0 13.5## 3 8.4 71.0 20.5## 4 5.9 72.8 20.7## 5 25.5 58.3 15.5## 6 42.7 44.0 13.7Tenemos 215 datos (curvas) Pero construimos el modelo con solo los 165 primeros.</description>
+    </item>
+    
+    <item>
+      <title>Clase 06: Clasificacon de datos funcionales</title>
+      <link>/2020/04/27/clase-06-clasificacon-de-datos-funcionales/</link>
+      <pubDate>Mon, 27 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/04/27/clase-06-clasificacon-de-datos-funcionales/</guid>
+      <description>Aquí hacemos clasificación de datos funcionales, utilizamos las librerías:
+fda.usc
+depth
+matrixcalc
+Empezamos por cargar los datos phoneme que contienen 500 ondas producidas al pronuncias los sonidos ingleses “sh”, “iy”, “dcl”, “aa”, “ao”, 100 de cada uno hay 250 casos (50 de cada) en la training sample y otros tantos en la test sample.
+library(fda.usc)library(depth)library(matrixcalc)data(phoneme)names(phoneme)## [1] &amp;quot;learn&amp;quot; &amp;quot;test&amp;quot; &amp;quot;classlearn&amp;quot; &amp;quot;classtest&amp;quot;sonidos = c(&amp;quot;sh&amp;quot;, &amp;quot;iy&amp;quot;, &amp;quot;dcl&amp;quot;, &amp;quot;aa&amp;quot;, &amp;quot;ao&amp;quot;)Empezamos por dibujar los datos.</description>
+    </item>
+    
+    <item>
+      <title>Clase 07: El algoritmo de las K medias</title>
+      <link>/2020/04/27/clase-07-el-algoritmo-de-las-k-medias/</link>
+      <pubDate>Mon, 27 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/04/27/clase-07-el-algoritmo-de-las-k-medias/</guid>
+      <description>Generamos las dos muestras. Necesitamos una función para calcular la raíz cuadrada de una matriz
+sqrt.matrix = function(A){e = eigen(A)aux = e$vectorssqrtA = aux %*% diag(sqrt(e$values)) %*% t(aux)sqrtA }n1 = 25n2 = 25m1 = matrix(c(0,0),nrow = 1)s1 = diag(length(m1))m2 = matrix(c(3,3),nrow = 1)s2 = matrix(c(1,0,0,1),nrow = 2)X1 = matrix(rnorm(2*n1),ncol=2)%*%sqrt.matrix(s1)X2 = matrix(rnorm(2*n2),ncol = 2)%*%sqrt.matrix(s2)for (i in 1:dim(X1)[1]) X1[i,] = X1[i,] + m1for (i in 1:dim(X2)[1]) X2[i,] = X2[i,] + m2X = rbind(X1,X2)Iniciamos el algoritmo con una partición aleatoria.</description>
+    </item>
+    
+    <item>
       <title>Clase 04: Movimiento Browniano</title>
       <link>/2020/04/26/clase-04-movimiento-browniano/</link>
       <pubDate>Sun, 26 Apr 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/04/26/clase-04-movimiento-browniano/</guid>
-      <description>Esta practica tiene dos partes. En la primera creamos los datos, en la segunda, se hace el programa para suavizar la curva utilizando el nucleo gaussiano.
-Parte 1: Ruido Blanco amortiguadoEmpezamos por determinar la curva que vamos a utilizar Va a estar definida en el intervalo [0,1] N es el numero de puntos en los que la tenemos definida:
-N=101t=seq(0,1,length.out = N)Va a ser una curva de la forma:\[X(t)= t^d(asin(2k\pi t)+(1-a)cos(2k\pi t)).</description>
+      <description>Esta practica tiene dos partes. En la primera creamos los datos, en la segunda, se hace el programa para suavizar la curva utilizando el núcleo gaussiano.
+Parte 1: Ruido Blanco amortiguadoLa curva a utilizar, esta definida en el intervalo [0,1] N es el numero de puntos en los que la tenemos definida:
+N=101t=seq(0,1,length.out = N)Va a ser una curva de la forma:\[X(t)= t^d(asin(2k\pi t)+(1-a)cos(2k\pi t)).\]</description>
     </item>
     
     <item>
@@ -28,9 +62,9 @@ N=101t=seq(0,1,length.out = N)Va a ser una curva de la forma:\[X(t)= t^d(asin
       <pubDate>Sat, 25 Apr 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/04/25/clase-03-derivadas-de-datos/</guid>
-      <description>Se presenta la aproximacion de derivadas en curvas, usando interpoladores lineales y splines.
-Los datos a utilizar es tecator, que contiene muestras de grasa, agua y proteina en carnes. Los datos estan disponible en el paquete fda.usc, para acceder a su documentacion basta usar:
-# se cargan los datosdata(&amp;quot;tecator&amp;quot;)#Llamado del help?tecatorCalculo de las derivadas de los datos del TecatorPrimero separamos el contenido de grasa y el resto de la variables, de tecator, para simplificacion de codigo.</description>
+      <description>Se presenta la aproximación de derivadas en curvas, usando interpoladores lineales y splines.
+Los datos a utilizar es tecator, que contiene muestras de grasa, agua y proteína en carnes. Los datos están disponible en el paquete fda.usc, para acceder a su documentación basta usar:
+# se cargan los datosdata(&amp;quot;tecator&amp;quot;)#Llamado del help?tecatorCalculo de las derivadas de los datos del TecatorPrimero separamos el contenido de grasa y el resto de la variables, de tecator, para simplificación de código.</description>
     </item>
     
     <item>
@@ -45,23 +79,23 @@ Los recursos utilizados para esta clase se pueden encontrar en los siguientes en
     </item>
     
     <item>
-      <title>Clase 02: Analizando los datos de Crecimiento</title>
+      <title>Clase 02: Analizando los datos de crecimiento</title>
       <link>/2020/04/24/clase-02-analizando-los-datos-de-crecimiento/</link>
       <pubDate>Fri, 24 Apr 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/04/24/clase-02-analizando-los-datos-de-crecimiento/</guid>
-      <description>Hacemos una estimacion de las curvas de crecimiento usando B-splines e interpolacion lineal y comparamos, usando validacion cruzada para determinar el procedimiento con mejores resultados.
-Los datos a utilizar es growth, es una lista de pesos de 39 ninios y 54 ninias de edades entre 1 a 18 anios, para el estudio de crecimiento Berkeley. Los datos estan disponible en el paquete fda, para acceder a su documentacion basta usar:</description>
+      <description>Hacemos una estimación de las curvas de crecimiento usando B-splines e interpolación lineal y comparamos, usando validación cruzada para determinar el procedimiento con mejores resultados.
+Los datos a utilizar es growth, es una lista de pesos de 39 niños y 54 niñas de edades entre 1 a 18 años, para el estudio de crecimiento Berkeley. Los datos están disponible en el paquete fda, para acceder a su documentación basta usar:</description>
     </item>
     
     <item>
-      <title>Clase 01: Introduccion al Analisis de Datos Funcionales</title>
+      <title>Clase 01: Introduccion al analisis de datos funcionales</title>
       <link>/2020/04/23/clase-01-introduccion-al-analisis-de-datos-funcionales/</link>
       <pubDate>Thu, 23 Apr 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/04/23/clase-01-introduccion-al-analisis-de-datos-funcionales/</guid>
-      <description>En este cuaderno damos una breve introduccion al analisis de datos funcionales en R usando 2 librerias fda de Ramsey y Wickham y su adaptacionfda.usc de Bande, de la Fuente, Galeano, Nieto-Reyes, y Garcia-Portugues. Dichos paquetes contienen rutinas para el analisis exploratorio de datos funcionales como profundidades, deteccion de curvas atipicas, modelos de regresion, clasificacion supervisada y analisis funcional de varianzas.
-Para instalar el paquete y sus dependencias basta con correr el siguiente codigo:</description>
+      <description>En este cuaderno damos una breve introducción al análisis de datos funcionales en R usando 2 librerías fda de Ramsey y Wickham y su adaptaciónfda.usc de Bande, de la Fuente, Galeano, Nieto-Reyes, y Garcia-Portugues. Dichos paquetes contienen rutinas para el análisis exploratorio de datos funcionales como profundidades, detección de curvas atípicas, modelos de regresión, clasificación supervisada y análisis funcional de varianzas.
+Para instalar el paquete y sus dependencias basta con correr el siguiente código:</description>
     </item>
     
   </channel>

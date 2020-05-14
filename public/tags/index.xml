@@ -6,10 +6,91 @@
     <description>Recent content in Tags on Analisis de datos funcionales</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es</language>
-    <lastBuildDate>Sun, 26 Apr 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 27 Apr 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>base de Fourier</title>
+      <link>/tags/base-de-fourier/</link>
+      <pubDate>Mon, 27 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/base-de-fourier/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>clasificacion</title>
+      <link>/tags/clasificacion/</link>
+      <pubDate>Mon, 27 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/clasificacion/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>clusters</title>
+      <link>/tags/clusters/</link>
+      <pubDate>Mon, 27 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/clusters/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Componentes principales</title>
+      <link>/tags/componentes-principales/</link>
+      <pubDate>Mon, 27 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/componentes-principales/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>datos funcionales</title>
+      <link>/tags/datos-funcionales/</link>
+      <pubDate>Mon, 27 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/datos-funcionales/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>k medias</title>
+      <link>/tags/k-medias/</link>
+      <pubDate>Mon, 27 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/k-medias/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>profundidades</title>
+      <link>/tags/profundidades/</link>
+      <pubDate>Mon, 27 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/profundidades/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>regresion</title>
+      <link>/tags/regresion/</link>
+      <pubDate>Mon, 27 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/regresion/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>regresion lineal</title>
+      <link>/tags/regresion-lineal/</link>
+      <pubDate>Mon, 27 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/regresion-lineal/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>movimiento de Brown</title>
@@ -62,33 +143,6 @@
       <pubDate>Fri, 24 Apr 2020 00:00:00 +0000</pubDate>
       
       <guid>/tags/cross-validation/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>regresion</title>
-      <link>/tags/regresion/</link>
-      <pubDate>Fri, 24 Apr 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/regresion/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>fda</title>
-      <link>/tags/fda/</link>
-      <pubDate>Thu, 23 Apr 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/fda/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>functional data</title>
-      <link>/tags/functional-data/</link>
-      <pubDate>Thu, 23 Apr 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/functional-data/</guid>
       <description></description>
     </item>
     

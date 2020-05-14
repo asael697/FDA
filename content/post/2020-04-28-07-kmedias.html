@@ -1,0 +1,144 @@
+---
+title: 'Clase 07: El algoritmo de las K medias'
+author: "Juan Antonio Cuesta-Albertos"
+date: 2020-04-27
+tags: ["clasificacion","k medias","clusters"]
+---
+
+
+
+<p>Generamos las dos muestras. Necesitamos una función para calcular la raíz cuadrada de una matriz</p>
+<pre class="r"><code>sqrt.matrix = function(A){
+  e = eigen(A)
+  aux = e$vectors
+  sqrtA = aux %*% diag(sqrt(e$values)) %*% t(aux)
+  sqrtA  
+}
+
+n1 = 25
+n2 = 25
+
+m1 = matrix(c(0,0),nrow = 1)
+s1 = diag(length(m1))
+
+m2 = matrix(c(3,3),nrow = 1)
+s2 = matrix(c(1,0,0,1),nrow = 2)
+
+X1 = matrix(rnorm(2*n1),ncol=2)%*%sqrt.matrix(s1)
+X2 = matrix(rnorm(2*n2),ncol = 2)%*%sqrt.matrix(s2)
+
+for (i in 1:dim(X1)[1]) X1[i,] = X1[i,] + m1
+for (i in 1:dim(X2)[1]) X2[i,] = X2[i,] + m2
+
+X = rbind(X1,X2)</code></pre>
+<p>Iniciamos el algoritmo con una partición aleatoria. Luego dibujamos los grupos obtenidos y las medias de cada uno de ellos. Los grupos son X1 y X2. Sus medias son ms1 y ms2. Cálculo del grupo 1 y su media.</p>
+<pre class="r"><code>n = n1 + n2
+
+aux = runif(n)
+Xs1 = X[aux &lt; 0.5,]
+
+ms1 = colMeans(Xs1)</code></pre>
+<p>Calculo del grupo 2</p>
+<pre class="r"><code>Xs2 = X[aux &gt; 0.5,]
+
+ms2 = colMeans(Xs2)</code></pre>
+<p>Representación gráfica de los grupos iniciales y sus medias.</p>
+<pre class="r"><code>plot(X,col = &quot;white&quot;,xlab = &quot; &quot;,ylab = &quot; &quot;,asp = 1)
+ points(Xs1,col = &quot;green&quot;,pch = 16)
+ points(Xs2,col = &quot;blue&quot;,pch = 16)
+ points(rbind(ms1,ms2), col = c(&quot;red&quot;),pch = 16,cex = 1.5)
+ legend(&quot;topleft&quot;,legend = c(&quot;Grupo 1&quot;,&quot;Grupo 2&quot;,&quot;k-medias&quot;), 
+        col = c(&quot;green&quot;,&quot;blue&quot;,&quot;red&quot;), 
+        cex = 1, lwd = c(0,0,0),pch = c(16,16,16))</code></pre>
+<p><img src="/post/2020-04-28-07-kmedias_files/figure-html/unnamed-chunk-4-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>Re calculamos grupos y los representamos gráficamente. Esta parte hay que repetirla las veces que se desee. Finalmente representamos las muestras iniciales.</p>
+<pre class="r"><code>D1 = as.matrix(dist(rbind(X,ms1)))
+D2 = as.matrix(dist(rbind(X,ms2)))
+
+D1 = D1[n+1,1:n]
+D2 = D2[n+1,1:n]
+
+Xs1 = X[D1 &lt; D2,]
+Xs2 = X[D2 &lt;= D1,]
+
+ms1 = colMeans(Xs1)
+ms2 = colMeans(Xs2)
+
+plot(X,col = &quot;white&quot;,xlab = &quot; &quot;,ylab = &quot; &quot;,asp = 1)
+ points(Xs1,col = &quot;green&quot;,pch = 16)
+ points(Xs2,col = &quot;blue&quot;,pch = 16)
+ points(rbind(ms1,ms2), col = c(&quot;red&quot;),pch = 16,cex = 1.5)
+ points(X1,col = &quot;red&quot;,  pch = 1,cex = 2)
+ points(X2,col = &quot;black&quot;,pch = 1,cex = 2)
+ legend(&quot;topleft&quot;,legend=c(&quot;Grupo 1&quot;,&quot;Grupo 2&quot;,&quot;k-medias&quot;), 
+        col = c(&quot;green&quot;,&quot;blue&quot;,&quot;red&quot;), 
+        cex = 1, lwd = c(0,0,0),pch = c(16,16,16))</code></pre>
+<p><img src="/post/2020-04-28-07-kmedias_files/figure-html/unnamed-chunk-5-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<div id="las-k-medias-recortadas" class="section level2">
+<h2>Las k medias recortadas</h2>
+<p>n es el tamaño muestral de cada grupo, el primer grupo tiene media (1,1), el segundo (-1,-1) se introducen 4 outliers con sd = 2</p>
+<pre class="r"><code>n = 48
+N = 2*n + 4
+
+X1 = matrix(rnorm(2*n,mean = 1,sd =.65),ncol = 2)
+X2 = matrix(rnorm(2*n,mean = -1,sd =.65),ncol = 2)
+XO = matrix(rnorm(2*4,mean =0,sd = 3),ncol = 2)
+
+X = rbind(X1,X2,XO)</code></pre>
+<p>Los grupos se identifican con colores rojo, azul y negro. Dibujamos los puntos que tenemos y tomamos el nivel de recorte y el numero de puntos a recortar</p>
+<pre class="r"><code>colores = c(rep(2,n),rep(3,n),rep(1,4))
+plot(X,xlab = &quot;&quot;,ylab =&quot;&quot;,col = colores,asp = 1,pch = 16)</code></pre>
+<p><img src="/post/2020-04-28-07-kmedias_files/figure-html/unnamed-chunk-7-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>
+alpha = 4/(2*n+4)
+recorte = floor(N*alpha)</code></pre>
+<p>Paso 1: hacemos la primera partición al azar y dibujamos los resultados</p>
+<pre class="r"><code>aux = runif(N)
+
+sample1 = X[aux &lt;  0.5,]
+sample2 = X[aux &gt;= 0.5,]
+
+m1 = colMeans(sample1)
+m2 = colMeans(sample2)
+
+plot(X,xlab = &quot;&quot;,ylab = &quot;&quot;,col = &quot;white&quot;,asp = 1)
+ points(sample1,pch = 16,col = &quot;red&quot;)
+ points(sample2,pch = 16,col = &quot;blue&quot;)
+ points(c(m1[1],m2[1]),c(m1[2],m2[2]),col = &quot;green&quot;,pch = 17,cex = 1.5)
+ legend(&quot;topleft&quot;,legend = c(&quot;Grupo 1&quot;,&quot;Grupo 2&quot;,&quot;k-medias&quot;), 
+        col = c(&quot;red&quot;,&quot;blue&quot;,&quot;green&quot;), 
+        cex = 1, lwd = c(0,0,0),pch = c(16,16,17) )</code></pre>
+<p><img src="/post/2020-04-28-07-kmedias_files/figure-html/unnamed-chunk-8-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>Paso 2: hacemos los nuevos grupos w.r.t. de las medias y re calculamos las medias, los outliers y dibujamos todo. Estos cálculos se repiten hasta la convergencia</p>
+<pre class="r"><code>grupos = rep(1,N)
+
+dist1 = rowSums((X-m1)^2)
+dist2 = rowSums((X-m2)^2)
+
+grupos[dist2 &lt; dist1] = 1 + grupos[dist2 &lt; dist1]
+
+m1 = colMeans(X[grupos == 1,])
+m2 = colMeans(X[grupos == 2,])
+
+dist1 = rowSums((X-m1)^2)
+dist2 = rowSums((X-m2)^2)
+
+dist=dist1
+dist[dist2 &lt; dist1] = dist2[dist2 &lt; dist1]
+
+aux = order(dist)
+outlier = aux[(N-recorte+1):N]
+grupos[outlier] = 0*grupos[outlier]
+
+plot(X,xlab = &quot;&quot;,ylab = &quot;&quot;,col = &quot;white&quot;,asp = 1)
+ points(X[grupos == 1,],pch = 16,col = &quot;red&quot;)
+ points(X[grupos == 2,],pch = 16,col = &quot;blue&quot;)
+ points(X[grupos == 0,],pch = 16,col = &quot;black&quot;)
+ points(c(m1[1],m2[1]),c(m1[2],m2[2]),col = &quot;green&quot;,pch = 17,cex = 1.5)
+ legend(&quot;topleft&quot;,legend=c(&quot;Grupo 1&quot;,&quot;Grupo 2&quot;,&quot;k-medias&quot;), 
+        col = c(&quot;red&quot;,&quot;blue&quot;,&quot;green&quot;), 
+        cex = 1, lwd = c(0,0,0),pch = c(16,16,17))
+ # Y ahora dibujamos los grupos iniciales
+ points(X,xlab = &quot;&quot;,ylab = &quot;&quot;,col = colores,pch = 1,cex = 1.5)</code></pre>
+<p><img src="/post/2020-04-28-07-kmedias_files/figure-html/unnamed-chunk-9-1.png" width="70%" style="display: block; margin: auto;" /></p>
+</div>

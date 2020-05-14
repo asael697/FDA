@@ -17,9 +17,9 @@
       <pubDate>Sat, 25 Apr 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/04/25/clase-03-derivadas-de-datos/</guid>
-      <description>Se presenta la aproximacion de derivadas en curvas, usando interpoladores lineales y splines.
-Los datos a utilizar es tecator, que contiene muestras de grasa, agua y proteina en carnes. Los datos estan disponible en el paquete fda.usc, para acceder a su documentacion basta usar:
-# se cargan los datosdata(&amp;quot;tecator&amp;quot;)#Llamado del help?tecatorCalculo de las derivadas de los datos del TecatorPrimero separamos el contenido de grasa y el resto de la variables, de tecator, para simplificacion de codigo.</description>
+      <description>Se presenta la aproximación de derivadas en curvas, usando interpoladores lineales y splines.
+Los datos a utilizar es tecator, que contiene muestras de grasa, agua y proteína en carnes. Los datos están disponible en el paquete fda.usc, para acceder a su documentación basta usar:
+# se cargan los datosdata(&amp;quot;tecator&amp;quot;)#Llamado del help?tecatorCalculo de las derivadas de los datos del TecatorPrimero separamos el contenido de grasa y el resto de la variables, de tecator, para simplificación de código.</description>
     </item>
     
   </channel>

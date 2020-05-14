@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>clusters on Analisis de datos funcionales</title>
+    <link>/tags/clusters/</link>
+    <description>Recent content in clusters on Analisis de datos funcionales</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>es</language>
+    <lastBuildDate>Mon, 27 Apr 2020 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/clusters/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Clase 07: El algoritmo de las K medias</title>
+      <link>/2020/04/27/clase-07-el-algoritmo-de-las-k-medias/</link>
+      <pubDate>Mon, 27 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/04/27/clase-07-el-algoritmo-de-las-k-medias/</guid>
+      <description>Generamos las dos muestras. Necesitamos una función para calcular la raíz cuadrada de una matriz
+sqrt.matrix = function(A){e = eigen(A)aux = e$vectorssqrtA = aux %*% diag(sqrt(e$values)) %*% t(aux)sqrtA }n1 = 25n2 = 25m1 = matrix(c(0,0),nrow = 1)s1 = diag(length(m1))m2 = matrix(c(3,3),nrow = 1)s2 = matrix(c(1,0,0,1),nrow = 2)X1 = matrix(rnorm(2*n1),ncol=2)%*%sqrt.matrix(s1)X2 = matrix(rnorm(2*n2),ncol = 2)%*%sqrt.matrix(s2)for (i in 1:dim(X1)[1]) X1[i,] = X1[i,] + m1for (i in 1:dim(X2)[1]) X2[i,] = X2[i,] + m2X = rbind(X1,X2)Iniciamos el algoritmo con una partición aleatoria.</description>
+    </item>
+    
+  </channel>
+</rss>
