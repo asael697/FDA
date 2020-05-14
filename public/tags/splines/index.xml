@@ -38,9 +38,8 @@ Los datos a utilizar es growth, es una lista de pesos de 39 niños y 54 niñas d
       <pubDate>Thu, 23 Apr 2020 00:00:00 +0000</pubDate>
       
       <guid>/2020/04/23/clase-01-introduccion-al-analisis-de-datos-funcionales/</guid>
-      <description>En este cuaderno damos una breve introducción al análisis de datos funcionales en R usando la librería fda.usc de Bande, de la Fuente, Galeano, Nieto-Reyes, y Garcia-Portugues. Dichos paquetes contienen rutinas para el análisis exploratorio de datos funcionales como profundidades, detección de curvas atípicas, modelos de regresión, clasificación supervisada y análisis funcional de varianzas.
-Para instalar el paquete y sus dependencias basta con correr el siguiente código:
-# Instalando el paqueteinstall.</description>
+      <description>En este cuaderno damos una breve introducción al análisis de datos funcionales en R usando 2 librerías fda de Ramsey y Wickham yfda.usc de Bande, de la Fuente, Galeano, Nieto-Reyes, y Garcia-Portugues. Dichos paquetes contienen rutinas para el análisis exploratorio de datos funcionales como profundidades, detección de curvas atípicas, modelos de regresión, clasificación supervisada y análisis funcional de varianzas.
+Para instalar el paquete y sus dependencias basta con correr el siguiente código:</description>
     </item>
     
   </channel>
