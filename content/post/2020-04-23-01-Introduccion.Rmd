@@ -19,8 +19,7 @@ knitr::opts_chunk$set(
 library(fda.usc)
 ```
 
-En este cuaderno damos una breve introducción al análisis de datos funcionales en R usando 2 librerías [fda](https://cran.r-project.org/web/packages/fda/fda.pdf) de *Ramsey y Wickham* y su adaptación
-[fda.usc](https://cran.r-project.org/web/packages/fda.usc/fda.usc.pdf) de  *Bande, de la Fuente, Galeano, Nieto-Reyes, y Garcia-Portugues*. Dichos paquetes contienen rutinas para el análisis exploratorio de datos funcionales como profundidades, detección de curvas atípicas, modelos de regresión, clasificación supervisada y análisis funcional de varianzas.
+En este cuaderno damos una breve introducción al análisis de datos funcionales en R usando la librería [fda.usc](https://cran.r-project.org/web/packages/fda.usc/fda.usc.pdf) de  *Bande, de la Fuente, Galeano, Nieto-Reyes, y Garcia-Portugues*. Dichos paquetes contienen rutinas para el análisis exploratorio de datos funcionales como profundidades, detección de curvas atípicas, modelos de regresión, clasificación supervisada y análisis funcional de varianzas.
 
 Para instalar el paquete y sus dependencias basta con correr el siguiente código:
   
